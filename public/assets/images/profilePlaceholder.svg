@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#fbf8f0" stroke="#181511" stroke-width="3" />
+  <!-- Circular portrait frame -->
+  <circle cx="200" cy="180" r="110" fill="#eddcb5" stroke="#181511" stroke-width="2.5" />
+  <circle cx="200" cy="150" r="45" fill="#f7c948" stroke="#181511" stroke-width="2" />
+  <path d="M 125 255 C 135 205, 265 205, 275 255 Z" fill="#9de5c1" stroke="#181511" stroke-width="2" />
+  <rect x="70" y="320" width="260" height="36" rx="2" fill="#fdfcf9" stroke="#181511" stroke-width="2" />
+  <text x="200" y="343" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="13" fill="#181511" letter-spacing="2">PROFILE IMAGE PLACEHOLDER</text>
+</svg>

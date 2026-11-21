@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-paper: #f5f3ed;
+  --color-ink: #181511;
+  --color-yellow: #f7c948;
+  --color-pink: #ff4d8d;
+  --color-cyan: #99b6ff;
+  --color-mint: #9de5c1;
+  --color-orange: #ff6a35;
+}
+
+/* Notebook paper texture with subtle horizontal lines & soft technical grid */
+body {
+  background-color: #f5f3ed;
+  /* Notebook subtle horizontal lined paper + faint vertical margin & grid lines */
+  background-image: 
+    /* Notebook ruling lines (28px height, ultra subtle) */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 27px,
+      rgba(24, 21, 17, 0.04) 27px,
+      rgba(24, 21, 17, 0.04) 28px
+    ),
+    /* Soft vertical margin guideline (left margin notebook rule) */
+    linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 48px,
+      rgba(255, 77, 141, 0.07) 48px,
+      rgba(255, 77, 141, 0.07) 50px,
+      transparent 50px
+    ),
+    /* Subtle dot grid */
+    radial-gradient(
+      circle,
+      rgba(24, 21, 17, 0.08) 1px,
+      transparent 1px
+    );
+  background-size: 100% 28px, 100% 100%, 24px 24px;
+  background-position: 0 0, 0 0, 12px 12px;
+}
+
+/* Washi tape clip path variations */
+.tape-polygon-1 {
+  clip-path: polygon(1% 0%, 99% 4%, 100% 96%, 0% 100%);
+}
+
+.tape-polygon-2 {
+  clip-path: polygon(0% 4%, 100% 0%, 99% 100%, 1% 95%);
+}
+
+.tape-polygon-3 {
+  clip-path: polygon(2% 2%, 98% 0%, 100% 98%, 0% 96%);
+}
+
+/* Torn paper edge effect */
+.torn-edge-b {
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 96%,
+    95% 98%, 90% 95%, 85% 98%, 80% 96%, 75% 99%, 70% 95%,
+    65% 98%, 60% 95%, 55% 98%, 50% 95%, 45% 99%, 40% 96%,
+    35% 98%, 30% 95%, 25% 98%, 20% 96%, 15% 99%, 10% 95%,
+    5% 98%, 0% 95%
+  );
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f3ed;
+  border-left: 1px solid rgba(24, 21, 17, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #181511;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff4d8d;
+}
+
+/* Selection */
+::selection {
+  background-color: #f7c948;
+  color: #181511;
+}
+
