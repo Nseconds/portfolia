@@ -10,6 +10,12 @@
   --color-cyan: #99b6ff;
   --color-mint: #9de5c1;
   --color-orange: #ff6a35;
+
+  /* Background Grid Dimensions - Single Source of Truth for CSS & Canvas */
+  --grid-w: 24px;
+  --grid-h: 24px;
+  --grid-offset-x: 0px;
+  --grid-offset-y: 0px;
 }
 
 /* Notebook paper texture with subtle horizontal lines & soft technical grid */
@@ -17,13 +23,13 @@ body {
   background-color: #f5f3ed;
   /* Notebook subtle horizontal lined paper + faint vertical margin & grid lines */
   background-image: 
-    /* Notebook ruling lines (28px height, ultra subtle) */
+    /* Notebook ruling lines (height: var(--grid-h), ultra subtle) */
     repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 27px,
-      rgba(24, 21, 17, 0.04) 27px,
-      rgba(24, 21, 17, 0.04) 28px
+      transparent calc(var(--grid-h) - 1px),
+      rgba(24, 21, 17, 0.04) calc(var(--grid-h) - 1px),
+      rgba(24, 21, 17, 0.04) var(--grid-h)
     ),
     /* Soft vertical margin guideline (left margin notebook rule) */
     linear-gradient(
@@ -40,8 +46,8 @@ body {
       rgba(24, 21, 17, 0.08) 1px,
       transparent 1px
     );
-  background-size: 100% 28px, 100% 100%, 24px 24px;
-  background-position: 0 0, 0 0, 12px 12px;
+  background-size: 100% var(--grid-h), 100% 100%, var(--grid-w) var(--grid-h);
+  background-position: var(--grid-offset-x) var(--grid-offset-y), 0 0, var(--grid-offset-x) var(--grid-offset-y);
 }
 
 /* Washi tape clip path variations */

@@ -1,21 +1,23 @@
 import React, { useEffect, useRef } from 'react';
 
 export interface CursorGridBackgroundProps {
-  /**
-   * Size of each square grid cell in pixels.
-   * Default: 48 (which aligns cleanly 2x2 with the 24px background dot grid).
-   * Set to 44 or any other custom size as desired.
-   */
-  cellSize?: number;
-  /** Stroke color for the cell outline (default: '#181511') */
+  /** Real horizontal cell spacing in pixels (defaults to CSS variable --grid-w or detected 24px) */
+  cellWidth?: number;
+  /** Real vertical cell spacing in pixels (defaults to CSS variable --grid-h or detected 24px) */
+  cellHeight?: number;
+  /** Pattern horizontal origin offset in pixels (defaults to CSS variable --grid-offset-x or detected 0px) */
+  offsetX?: number;
+  /** Pattern vertical origin offset in pixels (defaults to CSS variable --grid-offset-y or detected 0px) */
+  offsetY?: number;
+  /** Stroke color for cell outlines (default: '#181511') */
   strokeColor?: string;
-  /** Fill opacity for the active cells (default: 0.04) */
+  /** Fill opacity for active cells (default: 0.04) */
   fillOpacity?: number;
   /** Duration in ms for cells to smoothly fade out (default: 700) */
   fadeDuration?: number;
-  /** Cell radius affected around the cursor (default: 1 for a 3x3 plus/cluster) */
+  /** Cell radius affected around cursor (default: 1 for a 3x3 plus cluster) */
   radius?: number;
-  /** Additional CSS class names */
+  /** Optional custom CSS classes */
   className?: string;
 }
 
@@ -49,8 +51,19 @@ function parseRgb(color: string): { r: number; g: number; b: number } {
   return { r: 24, g: 21, b: 17 };
 }
 
+function getCssVariablePx(name: string, fallback: number): number {
+  if (typeof window === 'undefined') return fallback;
+  const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  if (!val) return fallback;
+  const parsed = parseFloat(val);
+  return isNaN(parsed) ? fallback : parsed;
+}
+
 export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
-  cellSize = 48,
+  cellWidth,
+  cellHeight,
+  offsetX,
+  offsetY,
   strokeColor = '#181511',
   fillOpacity = 0.04,
   fadeDuration = 700,
@@ -65,7 +78,7 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Accessibility: Disable completely on prefers-reduced-motion
+    // Accessibility: Disable completely if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -78,6 +91,12 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
     let height = window.innerHeight;
     let dpr = window.devicePixelRatio || 1;
 
+    // Read real grid spacing and origin offsets from CSS variables or props
+    let curCellW = cellWidth ?? getCssVariablePx('--grid-w', 24);
+    let curCellH = cellHeight ?? getCssVariablePx('--grid-h', 24);
+    let curOffX = offsetX ?? getCssVariablePx('--grid-offset-x', 0);
+    let curOffY = offsetY ?? getCssVariablePx('--grid-offset-y', 0);
+
     const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -87,6 +106,12 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Re-read CSS variables in case breakpoint changed styles
+      curCellW = cellWidth ?? getCssVariablePx('--grid-w', 24);
+      curCellH = cellHeight ?? getCssVariablePx('--grid-h', 24);
+      curOffX = offsetX ?? getCssVariablePx('--grid-offset-x', 0);
+      curOffY = offsetY ?? getCssVariablePx('--grid-offset-y', 0);
     };
     handleResize();
 
@@ -100,37 +125,36 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
     // Positive modulo helper
     const mod = (n: number, m: number) => ((n % m) + m) % m;
 
-    // Helper to calculate grid offsets aligned with body dot grid (offset 12px 12px)
+    // Calculate current viewport-relative origin offsets accounting for page scroll
     const getOffsets = () => {
       const scrollX = window.scrollX || 0;
       const scrollY = window.scrollY || 0;
-      const dotBaseOffset = 12;
       return {
-        offsetX: mod(dotBaseOffset - (scrollX % cellSize), cellSize),
-        offsetY: mod(dotBaseOffset - (scrollY % cellSize), cellSize),
+        viewportOffX: mod(curOffX - (scrollX % curCellW), curCellW),
+        viewportOffY: mod(curOffY - (scrollY % curCellH), curCellH),
       };
     };
 
-    // Main 60fps render loop: runs ONLY while active cells exist, stops when idle
+    // Main 60fps render loop: runs ONLY while cells are active; stops completely at idle
     const render = (now: number) => {
       const deltaTime = Math.min(100, now - lastTime);
       lastTime = now;
 
-      // Clear the canvas completely each frame
+      // Clear the entire canvas each frame
       ctx.clearRect(0, 0, width, height);
 
       if (activeCells.size === 0) {
-        // No cells left: stop RAF loop completely (0% CPU at rest)
+        // Zero active cells left: stop RAF loop completely (0% CPU at rest)
         isLoopRunning = false;
         animationFrameId = null;
         return;
       }
 
-      const { offsetX, offsetY } = getOffsets();
+      const { viewportOffX, viewportOffY } = getOffsets();
       const decay = deltaTime / fadeDuration;
       const keysToDelete: string[] = [];
 
-      // Draw all active cells
+      // Render each active cell
       for (const [key, cell] of activeCells.entries()) {
         cell.intensity -= decay;
 
@@ -139,25 +163,26 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
           continue;
         }
 
-        const x = cell.col * cellSize + offsetX;
-        const y = cell.row * cellSize + offsetY;
+        // Exact snap position: (offsetX + col * cellWidth, offsetY + row * cellHeight)
+        const x = viewportOffX + cell.col * curCellW;
+        const y = viewportOffY + cell.row * curCellH;
 
         // Viewport culling
-        if (x + cellSize < 0 || x > width || y + cellSize < 0 || y > height) {
+        if (x + curCellW < 0 || x > width || y + curCellH < 0 || y > height) {
           continue;
         }
 
-        // 1. Soft tinted fill
+        // 1. Soft tinted fill (optional very light black fill)
         if (fillOpacity > 0) {
           ctx.fillStyle = `rgba(${strokeRgb.r}, ${strokeRgb.g}, ${strokeRgb.b}, ${fillOpacity * cell.intensity})`;
-          ctx.fillRect(Math.floor(x), Math.floor(y), cellSize, cellSize);
+          ctx.fillRect(Math.floor(x), Math.floor(y), curCellW, curCellH);
         }
 
-        // 2. Thin black square outline (1px, ~0.85 opacity at center, weaker farther away)
-        const outlineAlpha = Math.min(1, 0.85 * cell.intensity);
-        ctx.strokeStyle = `rgba(${strokeRgb.r}, ${strokeRgb.g}, ${strokeRgb.b}, ${outlineAlpha})`;
+        // 2. Thin black outline (1px, ~0.85 opacity at center, weaker farther away)
+        const strokeAlpha = Math.min(1, 0.85 * cell.intensity);
+        ctx.strokeStyle = `rgba(${strokeRgb.r}, ${strokeRgb.g}, ${strokeRgb.b}, ${strokeAlpha})`;
         ctx.lineWidth = 1;
-        ctx.strokeRect(Math.floor(x) + 0.5, Math.floor(y) + 0.5, cellSize, cellSize);
+        ctx.strokeRect(Math.floor(x) + 0.5, Math.floor(y) + 0.5, curCellW, curCellH);
       }
 
       for (let i = 0; i < keysToDelete.length; i++) {
@@ -167,18 +192,19 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
       if (activeCells.size > 0) {
         animationFrameId = requestAnimationFrame(render);
       } else {
-        // Clear canvas cleanly and stop loop
+        // Clean clear and halt loop
         ctx.clearRect(0, 0, width, height);
         isLoopRunning = false;
         animationFrameId = null;
       }
     };
 
-    // Activate cluster around cursor
+    // Activate cluster of cells around the mouse cursor
     const activateAt = (clientX: number, clientY: number) => {
-      const { offsetX, offsetY } = getOffsets();
-      const cursorCol = Math.floor((clientX - offsetX) / cellSize);
-      const cursorRow = Math.floor((clientY - offsetY) / cellSize);
+      const { viewportOffX, viewportOffY } = getOffsets();
+      // Snap formula: col = floor((clientX - offsetX) / cellWidth)
+      const cursorCol = Math.floor((clientX - viewportOffX) / curCellW);
+      const cursorRow = Math.floor((clientY - viewportOffY) / curCellH);
 
       for (let dc = -radius; dc <= radius; dc++) {
         for (let dr = -radius; dr <= radius; dr++) {
@@ -242,7 +268,7 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
       window.removeEventListener('resize', handleResize);
       activeCells.clear();
     };
-  }, [cellSize, strokeColor, fillOpacity, fadeDuration, radius]);
+  }, [cellWidth, cellHeight, offsetX, offsetY, strokeColor, fillOpacity, fadeDuration, radius]);
 
   return (
     <canvas
