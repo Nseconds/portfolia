@@ -11,7 +11,9 @@ export interface CursorGridBackgroundProps {
   offsetY?: number;
   /** Stroke color for cell outlines (default: '#181511') */
   strokeColor?: string;
-  /** Fill opacity for active cells (default: 0.04) */
+  /** Maximum stroke opacity at the center cell (default: 0.38, reduced for soft elegance) */
+  maxStrokeOpacity?: number;
+  /** Fill opacity for active cells (default: 0.015, reduced soft ink wash) */
   fillOpacity?: number;
   /** Duration in ms for cells to smoothly fade out (default: 700) */
   fadeDuration?: number;
@@ -65,7 +67,8 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
   offsetX,
   offsetY,
   strokeColor = '#181511',
-  fillOpacity = 0.04,
+  maxStrokeOpacity = 0.38,
+  fillOpacity = 0.015,
   fadeDuration = 700,
   radius = 1,
   className = '',
@@ -178,8 +181,8 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
           ctx.fillRect(Math.floor(x), Math.floor(y), curCellW, curCellH);
         }
 
-        // 2. Thin black outline (1px, ~0.85 opacity at center, weaker farther away)
-        const strokeAlpha = Math.min(1, 0.85 * cell.intensity);
+        // 2. Thin black outline (1px, subtle reduced opacity, weaker farther away)
+        const strokeAlpha = Math.min(1, maxStrokeOpacity * cell.intensity);
         ctx.strokeStyle = `rgba(${strokeRgb.r}, ${strokeRgb.g}, ${strokeRgb.b}, ${strokeAlpha})`;
         ctx.lineWidth = 1;
         ctx.strokeRect(Math.floor(x) + 0.5, Math.floor(y) + 0.5, curCellW, curCellH);
@@ -268,7 +271,7 @@ export const CursorGridBackground: React.FC<CursorGridBackgroundProps> = ({
       window.removeEventListener('resize', handleResize);
       activeCells.clear();
     };
-  }, [cellWidth, cellHeight, offsetX, offsetY, strokeColor, fillOpacity, fadeDuration, radius]);
+  }, [cellWidth, cellHeight, offsetX, offsetY, strokeColor, maxStrokeOpacity, fillOpacity, fadeDuration, radius]);
 
   return (
     <canvas
