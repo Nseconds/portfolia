@@ -1,4 +1,5 @@
 import React from 'react';
+import { AmbientGrid } from './components/common/AmbientGrid';
 import { CursorGrid } from './components/common/CursorGrid';
 import { CustomCursor } from './components/common/CustomCursor';
 import { Navbar } from './components/Navbar';
@@ -15,16 +16,19 @@ import { Footer } from './components/Footer';
 export const App: React.FC = () => {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {/* Interactive Cursor-Reactive Background Grid */}
+      {/* 1. Ambient Background Grid Layer (subtle isolated breathing clusters) */}
+      <AmbientGrid />
+
+      {/* 2. Cursor Activation Grid Layer (smoothly tracking square grid window) */}
       <CursorGrid />
 
-      {/* Desktop Spring Custom Cursor */}
+      {/* 3. Desktop Spring Custom Cursor */}
       <CustomCursor />
 
-      {/* Floating Compact Navigation Bar */}
+      {/* 4. Floating Navigation Bar */}
       <Navbar />
 
-      {/* Main Portfolio Sections */}
+      {/* 5. Main Portfolio Content Sections */}
       <main className="relative z-10">
         <Hero />
         <About />
@@ -36,7 +40,7 @@ export const App: React.FC = () => {
         <Contact />
       </main>
 
-      {/* Minimal Editorial Footer */}
+      {/* 6. Minimal Editorial Footer */}
       <Footer />
     </div>
   );

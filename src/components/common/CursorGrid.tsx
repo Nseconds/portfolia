@@ -1,27 +1,20 @@
 import React, { useEffect, useRef } from 'react';
 
 interface CursorGridProps {
-  /** Size of each square grid cell in pixels (default: 28px, matching notebook lines) */
+  /** Size of each square cell in pixels (default: 28px, matching notebook ruling) */
   cellSize?: number;
-  /** Radius in cells around cursor (default: 3, forming a 7x7 grid with a 5x5 core) */
-  radius?: number;
-}
-
-interface ActiveCell {
-  col: number;
-  row: number;
-  opacity: number;
-  targetOpacity: number;
+  /** Number of cells across the grid window (default: 5 for a 5x5 grid, or 7 for 7x7) */
+  gridSize?: number;
 }
 
 export const CursorGrid: React.FC<CursorGridProps> = ({
   cellSize = 28,
-  radius = 3,
+  gridSize = 5,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // 1. Mobile & Touch Device Detection (disable on touch screens)
+    // 1. Mobile & Touch Detection (disable cursor grid on mobile/touch screens)
     if (
       typeof window === 'undefined' ||
       'ontouchstart' in window ||
@@ -53,21 +46,26 @@ export const CursorGrid: React.FC<CursorGridProps> = ({
     };
     handleResize();
 
-    // 3. Mouse & Activity State
-    let mouseX = -1000;
-    let mouseY = -1000;
+    // 3. Smooth Mouse Position & Interpolation
+    let targetX = -1000;
+    let targetY = -1000;
+    let currentX = -1000;
+    let currentY = -1000;
     let isMouseOnPage = false;
-    let lastMoveTime = performance.now();
-    let scrollX = window.scrollX || 0;
-    let scrollY = window.scrollY || 0;
-
-    const activeCells = new Map<string, ActiveCell>();
+    let lastMoveTime = 0;
+    let currentOpacity = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      targetX = e.clientX;
+      targetY = e.clientY;
       isMouseOnPage = true;
       lastMoveTime = performance.now();
+
+      // If first appearance, initialize currentX/Y immediately to avoid gliding from off-screen
+      if (currentX < -500) {
+        currentX = targetX;
+        currentY = targetY;
+      }
     };
 
     const handleMouseLeave = () => {
@@ -75,218 +73,157 @@ export const CursorGrid: React.FC<CursorGridProps> = ({
     };
 
     const handleMouseEnter = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      targetX = e.clientX;
+      targetY = e.clientY;
+      currentX = targetX;
+      currentY = targetY;
       isMouseOnPage = true;
       lastMoveTime = performance.now();
     };
 
-    const handleScroll = () => {
-      scrollX = window.scrollX || 0;
-      scrollY = window.scrollY || 0;
-    };
-
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
     // 4. Main 60fps Animation Loop
     let animationFrameId: number;
+    const totalSpan = gridSize * cellSize;
+    const halfSpan = totalSpan / 2;
+    const centerIndex = Math.floor(gridSize / 2);
 
     const render = () => {
       const now = performance.now();
 
-      // Determine resting activity level:
-      // When stationary for > 1.2s, gently settle to a calm 40% resting level
-      let activityFactor = 1.0;
-      if (isMouseOnPage) {
-        const stationaryTime = now - lastMoveTime;
-        if (stationaryTime > 1200) {
-          activityFactor = Math.max(0.4, 1.0 - (stationaryTime - 1200) / 1000);
+      // Easing / Interpolation for fluid cursor tracking
+      // currentX smoothly approaches targetX (lerp factor 0.16)
+      currentX += (targetX - currentX) * 0.16;
+      currentY += (targetY - currentY) * 0.16;
+
+      // Target Opacity Calculation
+      let targetOpacity = 0;
+      if (isMouseOnPage && currentX > -200) {
+        const timeSinceMove = now - lastMoveTime;
+        if (timeSinceMove < 800) {
+          // Actively moving: full bold visibility (1.0)
+          targetOpacity = 1.0;
+        } else if (timeSinceMove < 2000) {
+          // Stationary pause: gently relax to subtle resting visibility (0.45)
+          const relaxProgress = (timeSinceMove - 800) / 1200;
+          targetOpacity = 1.0 - relaxProgress * 0.55;
+        } else {
+          // Long stationary: maintain calm resting visibility
+          targetOpacity = 0.45;
         }
       } else {
-        activityFactor = 0;
+        // Mouse left page or not yet entered: fade out completely (0)
+        targetOpacity = 0;
       }
 
-      // Calculate scroll offset to anchor grid lines to the paper texture
-      const offsetX = -(scrollX % cellSize);
-      const offsetY = -(scrollY % cellSize);
-
-      // Current cursor cell in grid coordinates
-      const cursorCol = Math.floor((mouseX - offsetX) / cellSize);
-      const cursorRow = Math.floor((mouseY - offsetY) / cellSize);
-
-      // Update target opacities for cells within the active window around cursor
-      if (isMouseOnPage && activityFactor > 0.01) {
-        for (let dc = -radius; dc <= radius; dc++) {
-          for (let dr = -radius; dr <= radius; dr++) {
-            const c = cursorCol + dc;
-            const r = cursorRow + dr;
-            // Chebyshev distance for clean square geometry falloff
-            const d = Math.max(Math.abs(dc), Math.abs(dr));
-
-            let baseAlpha = 0;
-            if (d === 0) {
-              baseAlpha = 0.85; // Center cell (darkest black border)
-            } else if (d === 1) {
-              baseAlpha = 0.60; // 3x3 ring
-            } else if (d === 2) {
-              baseAlpha = 0.35; // 5x5 ring
-            } else if (d === 3) {
-              baseAlpha = 0.12; // 7x7 outer perimeter
-            }
-
-            const targetOpacity = baseAlpha * activityFactor;
-            const key = `${c},${r}`;
-            const existing = activeCells.get(key);
-
-            if (existing) {
-              existing.targetOpacity = targetOpacity;
-            } else if (targetOpacity > 0.01) {
-              activeCells.set(key, {
-                col: c,
-                row: r,
-                opacity: 0,
-                targetOpacity,
-              });
-            }
-          }
-        }
+      // Smooth Fade (duration approximately 300ms - 600ms)
+      if (targetOpacity > currentOpacity) {
+        // Quick responsive fade-in (~60ms)
+        currentOpacity += (targetOpacity - currentOpacity) * 0.28;
+      } else {
+        // Gentle smooth fade-out (~400-500ms)
+        currentOpacity += (targetOpacity - currentOpacity) * 0.08;
       }
 
       // Clear the canvas
       ctx.clearRect(0, 0, width, height);
 
-      // Update cell opacities with smooth decay & clean up faded cells
-      const keysToDelete: string[] = [];
-      const cellsToRender: ActiveCell[] = [];
+      // Only draw when visible
+      if (currentOpacity > 0.01 && currentX > -300) {
+        const startX = currentX - halfSpan;
+        const startY = currentY - halfSpan;
 
-      for (const [key, cell] of activeCells.entries()) {
-        const dc = Math.abs(cell.col - cursorCol);
-        const dr = Math.abs(cell.row - cursorRow);
+        // Viewport bounds check
+        if (
+          startX + totalSpan >= 0 &&
+          startX <= width &&
+          startY + totalSpan >= 0 &&
+          startY <= height
+        ) {
+          ctx.save();
 
-        // If cell is outside current cursor window or mouse left, target is 0
-        if (!isMouseOnPage || Math.max(dc, dr) > radius) {
-          cell.targetOpacity = 0;
-        }
+          // 1. Draw Cell Interiors (very subtle cream/ink wash)
+          for (let row = 0; row < gridSize; row++) {
+            for (let col = 0; col < gridSize; col++) {
+              const d = Math.max(Math.abs(col - centerIndex), Math.abs(row - centerIndex));
+              // Center cell has a very subtle tint, outer cells transparent
+              const interiorAlpha = d === 0 ? 0.04 : d === 1 ? 0.02 : 0.008;
 
-        // Smooth interpolation: fast fade-in (~60ms), gentle fade-out (~200ms)
-        if (cell.targetOpacity > cell.opacity) {
-          cell.opacity += (cell.targetOpacity - cell.opacity) * 0.35;
-        } else {
-          cell.opacity += (cell.targetOpacity - cell.opacity) * 0.14;
-        }
+              const cellX = startX + col * cellSize;
+              const cellY = startY + row * cellSize;
 
-        if (cell.opacity < 0.005 && cell.targetOpacity === 0) {
-          keysToDelete.push(key);
-        } else if (cell.opacity > 0.01) {
-          cellsToRender.push(cell);
-        }
-      }
-
-      for (let i = 0; i < keysToDelete.length; i++) {
-        activeCells.delete(keysToDelete[i]);
-      }
-
-      // If no active cells, continue loop without drawing
-      if (cellsToRender.length > 0) {
-        // 5. Draw Cell Interiors (very subtle cream/ink wash)
-        for (let i = 0; i < cellsToRender.length; i++) {
-          const cell = cellsToRender[i];
-          const x = cell.col * cellSize + offsetX;
-          const y = cell.row * cellSize + offsetY;
-
-          // Only render cells within viewport
-          if (x + cellSize < 0 || x > width || y + cellSize < 0 || y > height) {
-            continue;
+              ctx.fillStyle = `rgba(24, 21, 17, ${interiorAlpha * currentOpacity})`;
+              ctx.fillRect(Math.floor(cellX), Math.floor(cellY), cellSize, cellSize);
+            }
           }
 
-          // Subtle warm ink wash interior
-          ctx.fillStyle = `rgba(24, 21, 17, ${cell.opacity * 0.02})`;
-          ctx.fillRect(Math.floor(x), Math.floor(y), cellSize, cellSize);
-        }
+          // 2. Subtle Brutalist Shadow on the Active Grid
+          ctx.shadowColor = `rgba(24, 21, 17, ${0.12 * currentOpacity})`;
+          ctx.shadowBlur = 2;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          ctx.lineWidth = 1;
 
-        // 6. Collect Unique Horizontal and Vertical Line Segments
-        // This ensures single-stroke 1px lines without overlapping artifacts
-        const hSegments = new Map<string, { col: number; row: number; alpha: number }>();
-        const vSegments = new Map<string, { col: number; row: number; alpha: number }>();
+          // 3. Draw Grid Lines with Radial Distance Falloff
+          // Horizontal Lines
+          for (let r = 0; r <= gridSize; r++) {
+            const y = Math.floor(startY + r * cellSize) + 0.5; // Sharp 1px stroke
+            const distY = Math.abs(r - centerIndex - 0.5);
 
-        for (let i = 0; i < cellsToRender.length; i++) {
-          const cell = cellsToRender[i];
-          const c = cell.col;
-          const r = cell.row;
-          const op = cell.opacity;
+            for (let c = 0; c < gridSize; c++) {
+              const x1 = startX + c * cellSize;
+              const x2 = x1 + cellSize;
+              const distX = Math.abs(c - centerIndex);
+              const maxDist = Math.max(distX, Math.floor(distY));
 
-          // Top edge: (c, r) -> (c + 1, r)
-          const topKey = `${c},${r}`;
-          const currentTop = hSegments.get(topKey);
-          if (!currentTop || currentTop.alpha < op) {
-            hSegments.set(topKey, { col: c, row: r, alpha: op });
+              // Clean contrast hierarchy:
+              // Center lines: 0.88 opacity (clearly visible black)
+              // Ring 1: 0.62 opacity (dark black)
+              // Ring 2: 0.38 opacity (medium)
+              // Outer: 0.16 opacity (soft boundary)
+              let lineAlpha = 0.88;
+              if (maxDist === 1) lineAlpha = 0.62;
+              else if (maxDist === 2) lineAlpha = 0.38;
+              else if (maxDist >= 3) lineAlpha = 0.16;
+
+              ctx.strokeStyle = `rgba(24, 21, 17, ${lineAlpha * currentOpacity})`;
+              ctx.beginPath();
+              ctx.moveTo(Math.floor(x1), y);
+              ctx.lineTo(Math.floor(x2), y);
+              ctx.stroke();
+            }
           }
 
-          // Bottom edge: (c, r + 1) -> (c + 1, r + 1)
-          const bottomKey = `${c},${r + 1}`;
-          const currentBottom = hSegments.get(bottomKey);
-          if (!currentBottom || currentBottom.alpha < op) {
-            hSegments.set(bottomKey, { col: c, row: r + 1, alpha: op });
+          // Vertical Lines
+          for (let c = 0; c <= gridSize; c++) {
+            const x = Math.floor(startX + c * cellSize) + 0.5; // Sharp 1px stroke
+            const distX = Math.abs(c - centerIndex - 0.5);
+
+            for (let r = 0; r < gridSize; r++) {
+              const y1 = startY + r * cellSize;
+              const y2 = y1 + cellSize;
+              const distY = Math.abs(r - centerIndex);
+              const maxDist = Math.max(Math.floor(distX), distY);
+
+              let lineAlpha = 0.88;
+              if (maxDist === 1) lineAlpha = 0.62;
+              else if (maxDist === 2) lineAlpha = 0.38;
+              else if (maxDist >= 3) lineAlpha = 0.16;
+
+              ctx.strokeStyle = `rgba(24, 21, 17, ${lineAlpha * currentOpacity})`;
+              ctx.beginPath();
+              ctx.moveTo(x, Math.floor(y1));
+              ctx.lineTo(x, Math.floor(y2));
+              ctx.stroke();
+            }
           }
 
-          // Left edge: (c, r) -> (c, r + 1)
-          const leftKey = `${c},${r}`;
-          const currentLeft = vSegments.get(leftKey);
-          if (!currentLeft || currentLeft.alpha < op) {
-            vSegments.set(leftKey, { col: c, row: r, alpha: op });
-          }
-
-          // Right edge: (c + 1, r) -> (c + 1, r + 1)
-          const rightKey = `${c + 1},${r}`;
-          const currentRight = vSegments.get(rightKey);
-          if (!currentRight || currentRight.alpha < op) {
-            vSegments.set(rightKey, { col: c + 1, row: r, alpha: op });
-          }
+          ctx.restore();
         }
-
-        // 7. Draw Line Segments with Subtle Brutalist Drop Shadow
-        ctx.save();
-        ctx.lineWidth = 1;
-        ctx.shadowColor = 'rgba(24, 21, 17, 0.08)';
-        ctx.shadowBlur = 1.5;
-        ctx.shadowOffsetX = 1;
-        ctx.shadowOffsetY = 1;
-
-        // Draw horizontal line segments
-        for (const seg of hSegments.values()) {
-          const x1 = seg.col * cellSize + offsetX;
-          const x2 = x1 + cellSize;
-          const y = Math.floor(seg.row * cellSize + offsetY) + 0.5; // Sharp 1px stroke
-
-          if (x2 < 0 || x1 > width || y < 0 || y > height) continue;
-
-          ctx.strokeStyle = `rgba(24, 21, 17, ${seg.alpha})`;
-          ctx.beginPath();
-          ctx.moveTo(x1, y);
-          ctx.lineTo(x2, y);
-          ctx.stroke();
-        }
-
-        // Draw vertical line segments
-        for (const seg of vSegments.values()) {
-          const x = Math.floor(seg.col * cellSize + offsetX) + 0.5; // Sharp 1px stroke
-          const y1 = seg.row * cellSize + offsetY;
-          const y2 = y1 + cellSize;
-
-          if (x < 0 || x > width || y2 < 0 || y1 > height) continue;
-
-          ctx.strokeStyle = `rgba(24, 21, 17, ${seg.alpha})`;
-          ctx.beginPath();
-          ctx.moveTo(x, y1);
-          ctx.lineTo(x, y2);
-          ctx.stroke();
-        }
-
-        ctx.restore();
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -297,17 +234,16 @@ export const CursorGrid: React.FC<CursorGridProps> = ({
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [cellSize, radius]);
+  }, [cellSize, gridSize]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-[1] overflow-hidden"
       style={{
         width: '100vw',
         height: '100vh',
