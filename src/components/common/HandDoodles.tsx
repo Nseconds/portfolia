@@ -120,7 +120,7 @@ export const HandDrawnStar: React.FC<{
     <path
       d="M 12 2 L 12 22 M 2 12 L 22 12 M 5 5 L 19 19 M 5 19 L 19 5"
       stroke="currentColor"
-      strokeWidth="2.5"
+      strokeWidth="2.8"
       strokeLinecap="round"
     />
   </svg>
@@ -142,16 +142,60 @@ export const HandDrawnUnderline: React.FC<{
   color?: string;
 }> = ({ className = '', color = '#f7c948' }) => (
   <svg
-    viewBox="0 0 200 20"
+    viewBox="0 0 200 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    className={`w-full h-4 overflow-visible pointer-events-none ${className}`}
+    className={`w-full h-3 overflow-visible pointer-events-none ${className}`}
   >
     <path
-      d="M 3 10 C 45 4, 95 16, 145 8 C 165 5, 185 13, 198 9"
+      d="M 2 8 C 45 4, 95 12, 145 6 C 165 4, 185 10, 198 7"
       stroke={color}
       strokeWidth="4"
       strokeLinecap="round"
+    />
+  </svg>
+);
+
+// Little 3-line doodle spark / action rays
+export const DoodleRays: React.FC<{
+  className?: string;
+  color?: string;
+  size?: number;
+  angle?: number;
+}> = ({ className = '', color = '#181511', size = 20, angle = 0 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`inline-block pointer-events-none ${className}`}
+    style={{ color, transform: `rotate(${angle}deg)` }}
+  >
+    <path d="M 4 19 L 9 14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    <path d="M 12 21 L 12 14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+    <path d="M 20 19 L 15 14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+  </svg>
+);
+
+// Hand-drawn downward-curving arrow (like the one below the blue sticky note)
+export const DoodleReturnArrow: React.FC<{ className?: string; color?: string }> = ({
+  className = '',
+  color = '#181511'
+}) => (
+  <svg
+    viewBox="0 0 40 40"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`w-8 h-8 pointer-events-none ${className}`}
+    style={{ color }}
+  >
+    <path
+      d="M 30 10 C 28 24, 16 28, 8 28 M 8 28 L 15 22 M 8 28 L 14 34"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );

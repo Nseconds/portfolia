@@ -1,222 +1,268 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Sparkles } from 'lucide-react';
-import { HERO_DATA } from '../data/portfolioData';
+import { Code2, Layers, Zap, Box } from 'lucide-react';
+import ferosPortrait from '../assets/images/feros_portrait.png';
 import { StickyNote } from './common/StickyNote';
-import { CurvedArrow, HandDrawnStar, HandDrawnUnderline } from './common/HandDoodles';
+import {
+  CurvedArrow,
+  HandDrawnStar,
+  HandDrawnUnderline,
+  DoodleRays,
+  DoodleReturnArrow,
+} from './common/HandDoodles';
 import { TapeStrip } from './common/TapeStrip';
 
 export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative pt-28 md:pt-36 pb-20 md:pb-28 px-4 md:px-8 max-w-6xl mx-auto min-h-[90vh] flex flex-col justify-between overflow-visible"
+      className="relative pt-20 sm:pt-24 pb-8 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center min-h-[92vh] overflow-visible"
     >
-      {/* Top Meta Tag & Availability Pin */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="inline-flex items-center space-x-2 bg-paper-surface border border-ink/40 px-3.5 py-1.5 rounded-sm shadow-brutal-sm">
-          <span className="font-mono text-xs uppercase tracking-wider text-ink/70">
-            STATUS:
+      {/* 1. Sub-Header Status Row */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        {/* Status Pill */}
+        <div className="inline-flex items-center space-x-2 bg-paper-surface border-2 border-ink px-3 py-1 rounded-sm shadow-brutal-sm">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#45C98A] border border-ink animate-pulse"></span>
+          <span className="font-mono text-[11px] font-bold text-ink tracking-wider uppercase">
+            STATUS: OPEN TO NEW WORK
           </span>
-          <span className="font-mono text-xs font-bold text-ink">
-            {HERO_DATA.availability}
-          </span>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         </div>
 
-        <div className="font-mono text-xs text-ink/60 tracking-wider">
-          {HERO_DATA.location} · 2026
+        {/* Location & Year */}
+        <div className="font-mono text-[11px] font-bold text-ink/75 flex items-center space-x-1.5 tracking-wider">
+          <span>📍</span>
+          <span>KOZHIKODE, INDIA · 2026</span>
         </div>
       </div>
 
-      {/* Main Oversized Hero Composition */}
-      <div className="relative my-4 md:my-8">
-        {/* Handwritten Eyebrow with arrow */}
-        <div className="flex items-center space-x-3 mb-2 md:mb-3">
-          <span className="font-handwriting text-2xl md:text-3xl text-ink font-bold transform -rotate-2">
-            {HERO_DATA.label}
-          </span>
-          <CurvedArrow direction="down-right" className="w-12 h-8 text-crayon-pink" />
+      {/* 2. "my name is" Handwritten Eyebrow */}
+      <div className="flex items-center space-x-2 mb-1.5 ml-2">
+        <span className="font-handwriting text-2xl text-ink font-bold transform -rotate-1">
+          my name is
+        </span>
+        <CurvedArrow direction="down-right" className="w-10 h-6 text-[#FF8FCB]" />
+      </div>
+
+      {/* 3. Main Hero Frame */}
+      <div className="relative w-full">
+        {/* Yellow Washi Tape on Top-Left */}
+        <TapeStrip color="yellow" position="top-left" rotation="-rotate-6" className="w-24 z-30" />
+
+        {/* Main Canvas Box */}
+        <div
+          className="relative bg-paper-surface border-[3px] border-ink rounded-sm shadow-brutal-md overflow-hidden"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(24, 21, 17, 0.08) 1.5px, transparent 1.5px)`,
+            backgroundSize: '20px 20px',
+          }}
+        >
+          {/* Main Content: Two Columns (Left Content, Right Portrait) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 items-end pt-6 sm:pt-8 md:pt-10 px-6 sm:px-8 md:px-10 pb-0 relative">
+            {/* Left Column (~55% width) */}
+            <div className="md:col-span-7 z-20 space-y-3 pb-6 md:pb-8">
+              {/* Name Typography */}
+              <div className="space-y-0.5 select-none">
+                <h1 className="font-sans font-black text-4xl sm:text-5xl lg:text-[3.9rem] text-ink uppercase tracking-tight leading-[0.92]">
+                  MUHAMMAD
+                </h1>
+
+                <div className="relative inline-block">
+                  <h1 className="font-sans font-black text-4xl sm:text-5xl lg:text-[3.9rem] text-ink uppercase tracking-tight leading-[0.92]">
+                    FEROS
+                  </h1>
+                  {/* Yellow hand-drawn underline under FEROS */}
+                  <div className="w-full -mt-1 sm:-mt-2 mb-1">
+                    <HandDrawnUnderline color="#FFD33D" />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <h1 className="font-sans font-black text-4xl sm:text-5xl lg:text-[3.9rem] text-ink uppercase tracking-tight leading-[0.92]">
+                    FAZALUDEEN
+                  </h1>
+                  {/* Yellow star/sparkle */}
+                  <HandDrawnStar size={34} color="#FFD33D" className="animate-spin-slow" />
+                </div>
+              </div>
+
+              {/* Role Line */}
+              <div className="flex items-center space-x-2.5 pt-2">
+                <span className="bg-[#FFD33D] text-ink font-mono text-[11px] font-bold px-2.5 py-0.5 rounded-sm border border-ink shadow-brutal-sm tracking-wider uppercase">
+                  AI/ML ENGINEER
+                </span>
+                <span className="font-mono text-xs text-ink/40 font-bold">|</span>
+                <span className="font-mono text-[11px] font-bold text-ink uppercase tracking-wider">
+                  CREATIVE ENGINEER
+                </span>
+              </div>
+
+              {/* Short Introduction (approx 2 lines) */}
+              <p className="font-sans text-xs sm:text-sm text-ink-light leading-relaxed max-w-md pt-1">
+                I build AI-powered solutions, automate real-world workflows, and turn ideas into useful products that create impact.
+              </p>
+
+              {/* CTA Action Buttons */}
+              <div className="flex items-center space-x-3 pt-3">
+                <motion.a
+                  href="#work"
+                  data-cursor="open"
+                  whileHover={{ scale: 1.04, y: -1 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="inline-flex items-center space-x-2 bg-ink text-paper-surface border-2 border-ink px-4 py-2 rounded-sm shadow-brutal-sm hover:bg-[#FF8FCB] hover:shadow-brutal transition-all font-mono text-xs font-bold uppercase tracking-wider"
+                >
+                  <span>VIEW MY WORK</span>
+                  <span>→</span>
+                </motion.a>
+
+                <div className="flex items-center space-x-2">
+                  <motion.a
+                    href="#about"
+                    whileHover={{ scale: 1.04, y: -1 }}
+                    whileTap={{ scale: 0.96 }}
+                    className="inline-flex items-center space-x-1.5 bg-paper-surface text-ink border-2 border-ink px-4 py-2 rounded-sm shadow-brutal-sm hover:bg-paper transition-all font-mono text-xs font-bold uppercase tracking-wider"
+                  >
+                    <span className="text-[10px]">▶</span>
+                    <span>ABOUT ME</span>
+                  </motion.a>
+
+                  {/* Pink doodle rays next to about button */}
+                  <div className="pointer-events-none">
+                    <DoodleRays color="#FF8FCB" size={18} angle={35} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column (~45% width): Real Muhammad Portrait with Yellow Aura */}
+            <div className="md:col-span-5 flex justify-center md:justify-end items-end relative overflow-visible z-10">
+              <div className="relative w-full max-w-[300px] sm:max-w-[340px] md:max-w-[380px] flex items-end justify-center">
+                {/* Yellow organic background aura blob */}
+                <div
+                  className="absolute bottom-2 right-4 sm:right-6 w-[230px] sm:w-[280px] md:w-[310px] h-[220px] sm:h-[260px] md:h-[290px] rounded-[55%_45%_50%_50%/60%_50%_50%_40%] bg-[#FFD33D] -z-0 opacity-95 transform rotate-3"
+                ></div>
+
+                {/* Doodle action lines around hair */}
+                <div className="absolute top-2 left-6 z-10 pointer-events-none">
+                  <DoodleRays color="#181511" size={18} angle={-45} />
+                </div>
+                <div className="absolute top-4 right-8 z-10 pointer-events-none">
+                  <DoodleRays color="#181511" size={20} angle={40} />
+                </div>
+
+                {/* Muhammad's authentic photo cutout */}
+                <img
+                  src={ferosPortrait}
+                  alt="Muhammad Feros Fazaludeen"
+                  className="relative z-10 w-full h-auto max-h-[320px] sm:max-h-[380px] md:max-h-[430px] object-contain object-bottom select-none pointer-events-none drop-shadow-[0_6px_14px_rgba(24,21,17,0.12)]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Horizontal Capability Strip */}
+          <div className="relative z-20 border-t-2 border-ink/20 bg-paper-surface/95 px-4 sm:px-8 py-3 grid grid-cols-2 sm:grid-cols-5 items-center gap-3 text-ink">
+            {/* 1. 4+ Projects */}
+            <div className="flex items-center space-x-2">
+              <Code2 className="w-4 h-4 text-ink shrink-0" />
+              <div className="font-mono text-[11px] leading-tight">
+                <span className="font-black block">4+</span>
+                <span className="text-ink/60">Projects</span>
+              </div>
+            </div>
+
+            {/* 2. AI/ML Solutions */}
+            <div className="flex items-center space-x-2 sm:border-l sm:border-ink/15 sm:pl-3">
+              <Layers className="w-4 h-4 text-ink shrink-0" />
+              <div className="font-mono text-[11px] leading-tight">
+                <span className="font-black block">AI/ML</span>
+                <span className="text-ink/60">Solutions</span>
+              </div>
+            </div>
+
+            {/* 3. Automation Workflows */}
+            <div className="flex items-center space-x-2 border-l border-ink/15 pl-3">
+              <Zap className="w-4 h-4 text-ink shrink-0" />
+              <div className="font-mono text-[11px] leading-tight">
+                <span className="font-black block">Automation</span>
+                <span className="text-ink/60">Workflows</span>
+              </div>
+            </div>
+
+            {/* 4. Product Building */}
+            <div className="flex items-center space-x-2 border-l border-ink/15 pl-3">
+              <Box className="w-4 h-4 text-ink shrink-0" />
+              <div className="font-mono text-[11px] leading-tight">
+                <span className="font-black block">Product</span>
+                <span className="text-ink/60">Building</span>
+              </div>
+            </div>
+
+            {/* 5. questions before pixels ↘ */}
+            <div className="col-span-2 sm:col-span-1 flex items-center justify-end space-x-1 sm:border-l sm:border-ink/15 sm:pl-3">
+              <span className="font-handwriting text-base font-bold text-ink/75">
+                questions before pixels
+              </span>
+              <span className="font-handwriting text-base font-bold text-ink/75">↘</span>
+            </div>
+          </div>
         </div>
 
-        {/* Central Display Frame Container */}
-        <div className="relative inline-block w-full max-w-5xl">
-          {/* Decorative Corner Tape (Top-Left) */}
-          <TapeStrip color="yellow" position="top-left" rotation="-rotate-6" />
+        {/* 4. Sticky Notes Around the Frame */}
+        {/* Top-Right Yellow Sticky Note */}
+        <div className="hidden lg:block absolute -top-8 -right-6 z-30">
+          <StickyNote
+            text="MADE THINGS"
+            color="yellow"
+            rotation="rotate-3"
+            tag="CRAFT"
+            showPin={true}
+          />
+        </div>
 
-          {/* Handcrafted sketch box container */}
-          <div
-            className="relative bg-paper-surface border-4 border-ink rounded-sm shadow-brutal-lg md:shadow-brutal-xl overflow-hidden"
-            style={{
-              backgroundImage: `radial-gradient(circle, rgba(24, 21, 17, 0.08) 1.5px, transparent 1.5px)`,
-              backgroundSize: '20px 20px',
-            }}
-          >
-            {/* Background watermarked grid coordinates */}
-            <div className="absolute top-3 right-4 font-mono text-[11px] text-ink/30 select-none z-0">
-              CANVAS_WORKSPACE
-            </div>
-
-            {/* Split layout: Typography on Left, Real Photo on Right */}
-            <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 items-end pt-8 sm:pt-10 md:pt-12 px-6 sm:px-8 md:px-12">
-              {/* Left Column: Name Typography & Details */}
-              <div className="md:col-span-7 pb-6 sm:pb-8 md:pb-10 space-y-1">
-                <div className="font-sans font-black tracking-tight uppercase leading-[0.9] select-none text-ink">
-                  {/* Line 1: MUHAMMAD */}
-                  <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl hover:text-crayon-pink transition-colors">
-                    {HERO_DATA.nameLine1}
-                  </span>
-
-                  {/* Line 2: FEROS with hand-drawn yellow underline */}
-                  <div className="relative inline-block">
-                    <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl hover:text-crayon-blue transition-colors">
-                      {HERO_DATA.nameLine2}
-                    </span>
-                    <div className="w-full -mt-2 sm:-mt-3 mb-1">
-                      <HandDrawnUnderline color="#f7c948" />
-                    </div>
-                  </div>
-
-                  {/* Line 3: FAZALUDEEN with yellow asterisk */}
-                  <div className="flex items-center space-x-3 sm:space-x-4">
-                    <span className="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
-                      {HERO_DATA.nameLine3}
-                    </span>
-                    <span className="inline-block transform rotate-12">
-                      <HandDrawnStar size={38} color="#f7c948" className="animate-spin-slow" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Real Muhammad Photo Cutout */}
-              <div className="md:col-span-5 flex justify-center md:justify-end items-end relative overflow-visible">
-                <div className="relative w-full max-w-[320px] sm:max-w-[360px] md:max-w-[420px] flex items-end justify-center">
-                  <img
-                    src="/assets/images/feros_portrait.png"
-                    alt="Muhammad Feros Fazaludeen"
-                    className="w-full h-auto max-h-[340px] sm:max-h-[400px] md:max-h-[460px] object-contain object-bottom select-none pointer-events-none drop-shadow-[0_8px_20px_rgba(24,21,17,0.14)]"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Sub-tag partition bar inside the frame */}
-            <div className="relative z-10 border-t-2 border-dashed border-ink/20 px-6 sm:px-8 md:px-12 py-3.5 bg-paper-surface/90 flex flex-wrap items-center justify-between gap-2">
-              <span className="font-mono text-xs sm:text-sm uppercase tracking-widest font-bold text-ink/80">
-                ROLE: {HERO_DATA.role}
-              </span>
-              <span className="font-handwriting text-lg sm:text-xl text-ink/75 -rotate-1">
-                questions before pixels ✎
-              </span>
-            </div>
-          </div>
-
-          {/* Sticky Notes around Hero (Desktop / Tablet view) */}
-          {/* Top-Right: Yellow Craft Sticky Note */}
-          <div className="hidden lg:block absolute -top-10 -right-6 z-30">
+        {/* Middle-Right Blue/Cyan Sticky Note + Return Arrow */}
+        <div className="hidden lg:block absolute top-[44%] -right-10 -translate-y-1/2 z-30">
+          <div className="flex flex-col items-start space-y-1">
             <StickyNote
-              text="MADE THINGS"
-              color="yellow"
-              rotation="rotate-3"
-              tag="CRAFT"
-              showPin={true}
-            />
-          </div>
-
-          {/* Middle-Right: Cyan/Blue Discipline Sticky Note */}
-          <div className="hidden lg:block absolute top-[45%] -right-10 -translate-y-1/2 z-30">
-            <StickyNote
-              text="CREATIVE ENGINEER"
+              text="AI/ML ENGINEER"
               color="cyan"
               rotation="-rotate-2"
               tag="DISCIPLINE"
               showPin={true}
             />
-          </div>
-
-          {/* Bottom-Left: Pink Principle Sticky Note */}
-          <div className="hidden lg:block absolute -bottom-8 -left-6 z-30">
-            <StickyNote
-              text="SWEAT THE DETAILS"
-              color="pink"
-              rotation="-rotate-3"
-              tag="PRINCIPLE"
-              showPin={true}
-            />
+            <div className="pl-4 pointer-events-none">
+              <DoodleReturnArrow color="#181511" />
+            </div>
           </div>
         </div>
 
-        {/* Mobile Sticky Notes (Organized as horizontal badges so they don't break viewport) */}
-        <div className="flex lg:hidden flex-wrap gap-2 mt-4">
-          <StickyNote text="MADE THINGS" color="yellow" rotation="-rotate-1" tag="CRAFT" showPin={false} />
-          <StickyNote text="CREATIVE ENGINEER" color="cyan" rotation="rotate-1" tag="DISCIPLINE" showPin={false} />
-          <StickyNote text="SWEAT THE DETAILS" color="pink" rotation="-rotate-2" tag="PRINCIPLE" showPin={false} />
+        {/* Bottom-Left Pink Sticky Note */}
+        <div className="hidden lg:block absolute -bottom-6 -left-6 z-30">
+          <StickyNote
+            text="SWEAT THE DETAILS"
+            color="pink"
+            rotation="-rotate-3"
+            tag="PRINCIPLE"
+            showPin={true}
+          />
         </div>
       </div>
 
-      {/* Hero Headline, Subhead & Call To Action */}
-      <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
-        <div className="md:col-span-8 space-y-4">
-          <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-ink leading-tight">
-            "{HERO_DATA.headline}"
-          </h1>
-          <p className="font-sans text-base md:text-lg text-ink-light max-w-2xl leading-relaxed">
-            {HERO_DATA.subHeadline}
-          </p>
-        </div>
-
-        <div className="md:col-span-4 flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-4">
-          {/* Main CTA Button */}
-          <motion.a
-            href="#contact"
-            data-cursor="open"
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-ink text-paper-surface border-2 border-ink px-6 py-3.5 rounded-sm shadow-brutal hover:shadow-brutal-lg transition-all font-mono text-sm uppercase tracking-wider font-bold"
-          >
-            <span>CONTACT ME</span>
-            <Sparkles className="w-4 h-4 text-crayon-yellow" />
-          </motion.a>
-
-          {/* Scroll Down Hint with Doodled Arrow */}
-          <a
-            href="#about"
-            className="inline-flex items-center space-x-2 font-mono text-xs text-ink/60 hover:text-ink transition-colors"
-          >
-            <span>EXPLORE WORK</span>
-            <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
-          </a>
-        </div>
+      {/* Mobile Sticky Notes (Organized cleanly below the frame to prevent horizontal scroll) */}
+      <div className="flex lg:hidden flex-wrap gap-2 mt-4 justify-center">
+        <StickyNote text="MADE THINGS" color="yellow" rotation="-rotate-1" tag="CRAFT" showPin={false} />
+        <StickyNote text="AI/ML ENGINEER" color="cyan" rotation="rotate-1" tag="DISCIPLINE" showPin={false} />
+        <StickyNote text="SWEAT THE DETAILS" color="pink" rotation="-rotate-2" tag="PRINCIPLE" showPin={false} />
       </div>
 
-      {/* Bottom Profile Anchor */}
-      <div className="mt-12 pt-8 border-t border-ink/15 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-full border-2 border-ink bg-paper-surface overflow-hidden shadow-brutal-sm p-1">
-              <img
-                src="/assets/images/feros_portrait.png"
-                alt="Muhammad Feros"
-                className="w-full h-full object-cover object-top rounded-full"
-              />
-            </div>
-            <TapeStrip color="mint" position="top-right" rotation="rotate-12" className="scale-75" />
-          </div>
-          <div>
-            <div className="font-mono text-xs font-bold text-ink uppercase">
-              MUHAMMAD FEROS FAZALUDEEN
-            </div>
-            <div className="font-handwriting text-base text-ink/70">
-              AI/ML Engineer · Creative Technologist
-            </div>
-          </div>
+      {/* 5. "SCROLL TO EXPLORE" Indicator */}
+      <div className="mt-5 flex flex-col items-center justify-center space-y-1 select-none pointer-events-none">
+        <span className="font-handwriting text-sm font-bold text-ink/65 tracking-wider">
+          scroll to explore
+        </span>
+        <div className="w-4 h-6 rounded-full border-[1.5px] border-ink flex items-start justify-center p-0.5 shadow-brutal-sm">
+          <span className="w-1 h-1.5 rounded-full bg-ink animate-bounce"></span>
         </div>
-
-        <div className="font-mono text-xs text-ink/50 flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-crayon-yellow border border-ink"></span>
-          <span>SCROLL FOR FEATURED WORKS</span>
-        </div>
+        <span className="text-ink/60 text-[10px] -mt-1 font-bold">↓</span>
       </div>
     </section>
   );
