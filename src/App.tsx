@@ -1,4 +1,5 @@
 import React from 'react';
+import { CursorGrid } from './components/common/CursorGrid';
 import { CustomCursor } from './components/common/CustomCursor';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -14,6 +15,9 @@ import { Footer } from './components/Footer';
 export const App: React.FC = () => {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
+      {/* Interactive Cursor-Reactive Background Grid */}
+      <CursorGrid />
+
       {/* Desktop Spring Custom Cursor */}
       <CustomCursor />
 
