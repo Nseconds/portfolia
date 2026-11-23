@@ -136,3 +136,22 @@ export const PushPin: React.FC<{ className?: string; color?: string }> = ({
   </div>
 );
 
+// Hand-drawn sketchy underline
+export const HandDrawnUnderline: React.FC<{
+  className?: string;
+  color?: string;
+}> = ({ className = '', color = '#f7c948' }) => (
+  <svg
+    viewBox="0 0 200 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`w-full h-4 overflow-visible pointer-events-none ${className}`}
+  >
+    <path
+      d="M 3 10 C 45 4, 95 16, 145 8 C 165 5, 185 13, 198 9"
+      stroke={color}
+      strokeWidth="4"
+      strokeLinecap="round"
+    />
+  </svg>
+);

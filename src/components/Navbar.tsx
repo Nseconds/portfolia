@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
           >
             <span className="w-2.5 h-2.5 rounded-full bg-crayon-pink border border-ink animate-pulse"></span>
             <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-ink">
-              YOUR NAME
+              MUHAMMAD FEROS
             </span>
             <span className="hidden sm:inline font-handwriting text-xs text-ink/60 -rotate-2">
               (portfolio)

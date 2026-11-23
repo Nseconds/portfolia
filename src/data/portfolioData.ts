@@ -2,12 +2,13 @@ import { ProjectItem, ExperimentItem, SkillCategory, CapabilityItem } from '../t
 
 export const HERO_DATA = {
   label: "my name is",
-  nameLine1: "YOUR",
-  nameLine2: "NAME",
+  nameLine1: "MUHAMMAD",
+  nameLine2: "FEROS",
+  nameLine3: "FAZALUDEEN",
   headline: "I DESIGN THINGS THAT GET OUT OF YOUR WAY.",
   subHeadline: "I design, build, and prototype thoughtful software that balances creative exploration with rigorous product craft.",
-  role: "YOUR ROLE",
-  location: "CITY, COUNTRY",
+  role: "AI/ML ENGINEER",
+  location: "KOZHIKODE, INDIA",
   availability: "OPEN TO NEW WORK",
   stickyNotes: [
     { text: "MADE THINGS", color: "yellow", rotation: "-rotate-3", position: "top-left" },
