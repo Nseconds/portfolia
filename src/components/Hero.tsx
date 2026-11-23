@@ -50,7 +50,7 @@ export const Hero: React.FC = () => {
 
         {/* Main Canvas Box */}
         <div
-          className="relative bg-paper-surface border-[3px] border-ink rounded-sm shadow-brutal-md overflow-hidden"
+          className="relative bg-paper-surface/85 backdrop-blur-[2px] border-[3px] border-ink rounded-sm shadow-brutal-md overflow-hidden"
           style={{
             backgroundImage: `radial-gradient(circle, rgba(24, 21, 17, 0.08) 1.5px, transparent 1.5px)`,
             backgroundSize: '20px 20px',
@@ -160,7 +160,7 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* Bottom Horizontal Capability Strip */}
-          <div className="relative z-20 border-t-2 border-ink/20 bg-paper-surface/95 px-4 sm:px-8 py-3 grid grid-cols-2 sm:grid-cols-5 items-center gap-3 text-ink">
+          <div className="relative z-20 border-t-2 border-ink/20 bg-paper-surface/85 px-4 sm:px-8 py-3 grid grid-cols-2 sm:grid-cols-5 items-center gap-3 text-ink">
             {/* 1. 4+ Projects */}
             <div className="flex items-center space-x-2">
               <Code2 className="w-4 h-4 text-ink shrink-0" />
