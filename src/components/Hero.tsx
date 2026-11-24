@@ -16,7 +16,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative pt-20 sm:pt-24 pb-8 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center min-h-[92vh] overflow-visible"
+      className="relative pt-20 sm:pt-24 pb-8 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center min-h-0 sm:min-h-[76vh] overflow-visible"
     >
       {/* 1. Sub-Header Status Row */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">

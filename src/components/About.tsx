@@ -8,31 +8,31 @@ import { PixelDinoScene } from './common/PixelDinoScene';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="pt-2 sm:pt-4 pb-20 md:pb-28 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
-      {/* 1. Transitional Pixel Dino Scene (Shifted slightly right on desktop) */}
-      <div className="w-full flex justify-center mb-1 sm:mb-2">
-        <PixelDinoScene
-          className="w-full max-w-[850px] md:translate-x-10 lg:translate-x-12 transition-transform"
-          height={210}
-        />
-      </div>
+    <section id="about" className="pt-8 sm:pt-10 md:pt-12 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
+      {/* Header Composition: Left Titles & Right Dino Game Scene */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center mb-6 md:mb-8">
+        {/* Left: About Eyebrow & Title (~42% width) */}
+        <div className="lg:col-span-5 space-y-1">
+          {/* Section Eyebrow */}
+          <div className="flex items-center space-x-3 mb-2">
+            <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
+              {ABOUT_DATA.eyebrow}
+            </span>
+            <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
+          </div>
 
-      {/* 2. Section Eyebrow & Main Title (Moved up closer to the Dino visual) */}
-      <div className="-mt-4 sm:-mt-6 md:-mt-8">
-        {/* Section Eyebrow */}
-        <div className="flex items-center space-x-3 mb-2 sm:mb-3">
-          <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
-            {ABOUT_DATA.eyebrow}
-          </span>
-          <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
+          {/* Section Main Title with Hand-drawn circle */}
+          <div className="relative inline-block">
+            <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
+              {ABOUT_DATA.title}
+            </h2>
+            <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
+          </div>
         </div>
 
-        {/* Section Main Title with Hand-drawn circle */}
-        <div className="relative inline-block mb-8 md:mb-12">
-          <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
-            {ABOUT_DATA.title}
-          </h2>
-          <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
+        {/* Right: Dino Game Scene (~58% width, wide horizontal composition) */}
+        <div className="lg:col-span-7 w-full flex justify-center lg:justify-end">
+          <PixelDinoScene className="w-full" height={160} />
         </div>
       </div>
 

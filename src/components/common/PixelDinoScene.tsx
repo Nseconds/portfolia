@@ -2,94 +2,95 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface PixelDinoSceneProps {
   className?: string;
-  width?: number;
   height?: number;
 }
 
 // ---------------------------------------------------------------------------
-// Monochrome Pixel-Art Bitmaps (1 = dark pixel '#', 0 = transparent '.')
+// Monochrome Pixel-Art Bitmaps (1 = colored pixel, 0 = transparent)
 // ---------------------------------------------------------------------------
 
-// 1. T-Rex Dinosaur (Facing RIGHT, 20 wide x 23 high)
-const DINO_RUN_F0 = [
-  '...........########.',
-  '...........#########',
-  '...........#.#.#####',
-  '...........#########',
-  '...........#########',
-  '...........#######..',
-  '...........#########',
-  '.#.........####.....',
-  '.##........#####....',
-  '.###......######....',
-  '.####....######.....',
-  '.######.#######.....',
-  '.##############.....',
-  '..############......',
-  '...##########.......',
-  '....########........',
-  '.....######.........',
-  '.....#####..........',
-  '.....####...........',
-  '.....#..#...........',
-  '.....#..#...........',
-  '.....#..##..........',
-  '.....##.............',
+const DINO_FRAMES = [
+  // Frame 0: Left leg step
+  [
+    '...........########.',
+    '...........#########',
+    '...........#.#.#####',
+    '...........#########',
+    '...........#########',
+    '...........#######..',
+    '...........#########',
+    '.#.........####.....',
+    '.##........#####....',
+    '.###......######....',
+    '.####....######.....',
+    '.######.#######.....',
+    '.##############.....',
+    '..############......',
+    '...##########.......',
+    '....########........',
+    '.....######.........',
+    '.....#####..........',
+    '.....####...........',
+    '.....#..#...........',
+    '.....#..#...........',
+    '.....#..##..........',
+    '.....##.............',
+  ],
+  // Frame 1: Standing / Neutral
+  [
+    '...........########.',
+    '...........#########',
+    '...........#.#.#####',
+    '...........#########',
+    '...........#########',
+    '...........#######..',
+    '...........#########',
+    '.#.........####.....',
+    '.##........#####....',
+    '.###......######....',
+    '.####....######.....',
+    '.######.#######.....',
+    '.##############.....',
+    '..############......',
+    '...##########.......',
+    '....########........',
+    '.....######.........',
+    '.....#####..........',
+    '.....####...........',
+    '.....#..#...........',
+    '.....#..#...........',
+    '.....#..#...........',
+    '.....##.##..........',
+  ],
+  // Frame 2: Right leg step
+  [
+    '...........########.',
+    '...........#########',
+    '...........#.#.#####',
+    '...........#########',
+    '...........#########',
+    '...........#######..',
+    '...........#########',
+    '.#.........####.....',
+    '.##........#####....',
+    '.###......######....',
+    '.####....######.....',
+    '.######.#######.....',
+    '.##############.....',
+    '..############......',
+    '...##########.......',
+    '....########........',
+    '.....######.........',
+    '.....#####..........',
+    '.....####...........',
+    '.....#..#...........',
+    '.....#..#...........',
+    '.....##.#...........',
+    '........##..........',
+  ],
 ];
 
-const DINO_RUN_F1 = [
-  '...........########.',
-  '...........#########',
-  '...........#.#.#####',
-  '...........#########',
-  '...........#########',
-  '...........#######..',
-  '...........#########',
-  '.#.........####.....',
-  '.##........#####....',
-  '.###......######....',
-  '.####....######.....',
-  '.######.#######.....',
-  '.##############.....',
-  '..############......',
-  '...##########.......',
-  '....########........',
-  '.....######.........',
-  '.....#####..........',
-  '.....####...........',
-  '.....#..#...........',
-  '.....#..#...........',
-  '.....#..#...........',
-  '.....##.##..........',
-];
-
-const DINO_RUN_F2 = [
-  '...........########.',
-  '...........#########',
-  '...........#.#.#####',
-  '...........#########',
-  '...........#########',
-  '...........#######..',
-  '...........#########',
-  '.#.........####.....',
-  '.##........#####....',
-  '.###......######....',
-  '.####....######.....',
-  '.######.#######.....',
-  '.##############.....',
-  '..############......',
-  '...##########.......',
-  '....########........',
-  '.....######.........',
-  '.....#####..........',
-  '.....####...........',
-  '.....#..#...........',
-  '.....#..#...........',
-  '.....##.#...........',
-  '........##..........',
-];
-
-// Curious glance (subtle eye perk for hover interaction)
+// Curious look frame (head slightly tilted up on hover interaction)
 const DINO_CURIOUS = [
   '............########',
   '............########',
@@ -116,98 +117,134 @@ const DINO_CURIOUS = [
   '.....##.##..........',
 ];
 
-// 2. Cacti Outlines (as in reference Image 2)
-const CACTUS_SINGLE = [
-  '..###..',
-  '..#.#..',
-  '#.###.#',
-  '#.#.#.#',
-  '#.#.#.#',
-  '###.###',
-  '..###..',
-  '..#.#..',
-  '..#.#..',
-  '..#.#..',
-  '..#.#..',
-  '..###..',
+// Cacti variations
+const CACTUS_VARIATIONS = [
+  // Small single cactus
+  [
+    '..###..',
+    '..###..',
+    '#.###.#',
+    '#.###.#',
+    '#.###.#',
+    '#####.#',
+    '..#####',
+    '..###..',
+    '..###..',
+    '..###..',
+    '..###..',
+    '..###..',
+  ],
+  // Double cactus
+  [
+    '..###.......###..',
+    '..###.......###..',
+    '#.###.#...#.###.#',
+    '#.###.#...#.###.#',
+    '#.###.#...#.###.#',
+    '#####.#...#####.#',
+    '..#####.....#####',
+    '..###.........###',
+    '..###.........###',
+    '..###.........###',
+    '..###.........###',
+    '..###.........###',
+    '..###.........###',
+  ],
+  // Tall / branched cactus
+  [
+    '..###........',
+    '..###........',
+    '#.###.#......',
+    '#.###.#.###..',
+    '#.###.#.###..',
+    '#####.#.###.#',
+    '..#####.###.#',
+    '..###...#####',
+    '..###.....###',
+    '..###.....###',
+    '..###.....###',
+    '..###.....###',
+    '..###.....###',
+    '..###.....###',
+  ],
 ];
 
-const CACTUS_DOUBLE = [
-  '..###.......###..',
-  '..#.#.......#.#..',
-  '#.###.#...#.###.#',
-  '#.#.#.#...#.#.#.#',
-  '#.#.#.#...#.#.#.#',
-  '###.###...###.###',
-  '..###.......###..',
-  '..#.#.......#.#..',
-  '..#.#.......#.#..',
-  '..#.#.......#.#..',
-  '..#.#.......#.#..',
-  '..###.......###..',
+// Outline cloud (classic Chrome offline cloud silhouette with transparent interior)
+const CLOUD_OUTLINE = [
+  '.......######.......',
+  '.....##......##.....',
+  '...##..........##...',
+  '..#..............#..',
+  '.#................#.',
+  '#..................#',
+  '####################',
 ];
 
-// 3. Desert Rock / Boulder (as in reference Image 2)
-const ROCK_BITMAP = [
-  '....######....',
-  '..##......##..',
-  '.#..........#.',
-  '##############',
+// Yellow pixel sun (matching reference screenshot)
+const PIXEL_SUN = [
+  '..####..',
+  '.######.',
+  '########',
+  '########',
+  '########',
+  '########',
+  '.######.',
+  '..####..',
 ];
 
-// 4. Pixel Clouds with Thin Dark Outline (as in reference Image 2)
-const CLOUD_BITMAP = [
-  '..........######..........',
-  '........##......##........',
-  '..######..........######..',
-  '.#......................#.',
-  '#........................#',
-  '##########################',
+// Distant low mountain / hill silhouettes on horizon
+const PIXEL_HILLS = [
+  [
+    '.......#.......',
+    '......###......',
+    '.....#####.....',
+    '....#######....',
+    '...#########...',
+    '..###########..',
+    '.#############.',
+    '###############',
+  ],
+  [
+    '.......#...............',
+    '......###.........#....',
+    '.....#####.......###...',
+    '....#######.....#####..',
+    '...#########...#######.',
+    '..###########.#########',
+    '.######################',
+    '#######################',
+  ],
 ];
 
-// 5. Pixel Birds (Pterodactyl, 2 frames)
-const BIRD_F0 = [
-  '....#.......',
-  '...###......',
-  '..#####.....',
-  '.#######....',
-  '###.#####.##',
-  '..#########.',
-  '....#####...',
-  '.....###....',
-];
-
-const BIRD_F1 = [
-  '.....###....',
-  '....#####...',
-  '..#########.',
-  '###.#####.##',
-  '.#######....',
-  '..#####.....',
-  '...###......',
-  '....#.......',
-];
-
-// 6. Muted Yellow Pixel Sun (as in reference Image 2)
-const SUN_BITMAP = [
-  '....########....',
-  '..############..',
-  '.##############.',
-  '.##############.',
-  '################',
-  '################',
-  '################',
-  '################',
-  '.##############.',
-  '.##############.',
-  '..############..',
-  '....########....',
+// Pixel bird (Pterodactyl) flapping frames
+const BIRD_FRAMES = [
+  // Wings up
+  [
+    '.....#......',
+    '....###.....',
+    '...#####....',
+    '..#######...',
+    '.#########..',
+    '##.######.##',
+    '...######...',
+    '.....##.....',
+  ],
+  // Wings down
+  [
+    '.....##.....',
+    '...######...',
+    '##.######.##',
+    '.#########..',
+    '..#######...',
+    '...#####....',
+    '....###.....',
+    '.....#......',
+  ],
 ];
 
 export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
   className = '',
-  width: customWidth,
-  height: customHeight = 210,
+  height = 160,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -223,24 +260,18 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const PIXEL_SCALE = 2; // Crisp 2x2 physical pixel scale
-    const COLOR_INK = '#181511'; // Portfolio dark ink
-    const COLOR_SUN = '#F7C948'; // Muted portfolio yellow accent
-    const COLOR_MOUNTAIN = 'rgba(24, 21, 17, 0.055)'; // Very subtle distant mountain grey
-    const COLOR_CLOUD_FILL = 'rgba(252, 251, 248, 0.9)'; // Off-white cloud interior
-    const COLOR_GROUND = 'rgba(24, 21, 17, 0.35)'; // Subtle ground line
-    const COLOR_DUST = 'rgba(24, 21, 17, 0.3)'; // Dust puff particles
+    const PIXEL_SCALE = 2; // 2x2 physical pixels per sprite pixel
+    const COLOR_INK = '#181511'; // Portfolio ink black
+    const COLOR_CLOUD = 'rgba(24, 21, 17, 0.55)'; // Charcoal outline cloud
+    const COLOR_SUN = '#F7C948'; // Portfolio yellow accent
+    const COLOR_HILL = 'rgba(24, 21, 17, 0.16)'; // Faint horizon hills
+    const COLOR_GROUND = 'rgba(24, 21, 17, 0.45)'; // Ground line
 
-    let width = customWidth || container.clientWidth || 780;
-    const height = customHeight;
+    let width = container.clientWidth || 550;
     let dpr = window.devicePixelRatio || 1;
 
-    // Helper: Create offscreen canvas for a 2-tone pixel bitmap
-    const createOffscreen = (
-      bitmap: string[],
-      strokeColor: string,
-      fillColor: string | null = null
-    ): HTMLCanvasElement => {
+    // Helper: Create offscreen canvas for a sprite bitmap
+    const createOffscreen = (bitmap: string[], color: string): HTMLCanvasElement => {
       const oc = document.createElement('canvas');
       const rows = bitmap.length;
       const cols = bitmap[0].length;
@@ -248,14 +279,10 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       oc.height = rows * PIXEL_SCALE;
       const octx = oc.getContext('2d');
       if (octx) {
+        octx.fillStyle = color;
         for (let r = 0; r < rows; r++) {
           for (let c = 0; c < cols; c++) {
-            const ch = bitmap[r][c];
-            if (ch === '#') {
-              octx.fillStyle = strokeColor;
-              octx.fillRect(c * PIXEL_SCALE, r * PIXEL_SCALE, PIXEL_SCALE, PIXEL_SCALE);
-            } else if (ch === ' ' && fillColor) {
-              octx.fillStyle = fillColor;
+            if (bitmap[r][c] === '#') {
               octx.fillRect(c * PIXEL_SCALE, r * PIXEL_SCALE, PIXEL_SCALE, PIXEL_SCALE);
             }
           }
@@ -264,112 +291,62 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       return oc;
     };
 
-    // Pre-render sprite sheets
+    // Pre-render sprite sheets once for 60fps performance
     const dinoSprites = [
-      createOffscreen(DINO_RUN_F0, COLOR_INK),
-      createOffscreen(DINO_RUN_F1, COLOR_INK),
-      createOffscreen(DINO_RUN_F2, COLOR_INK),
+      createOffscreen(DINO_FRAMES[0], COLOR_INK),
+      createOffscreen(DINO_FRAMES[1], COLOR_INK),
+      createOffscreen(DINO_FRAMES[2], COLOR_INK),
       createOffscreen(DINO_CURIOUS, COLOR_INK),
     ];
 
-    const cactusSingle = createOffscreen(CACTUS_SINGLE, COLOR_INK);
-    const cactusDouble = createOffscreen(CACTUS_DOUBLE, COLOR_INK);
-    const rockSprite = createOffscreen(ROCK_BITMAP, COLOR_INK);
-    const sunSprite = createOffscreen(SUN_BITMAP, COLOR_SUN);
-    const birdSprites = [
-      createOffscreen(BIRD_F0, COLOR_INK),
-      createOffscreen(BIRD_F1, COLOR_INK),
-    ];
+    const cactusSprites = CACTUS_VARIATIONS.map((c) => createOffscreen(c, COLOR_INK));
+    const cloudSprite = createOffscreen(CLOUD_OUTLINE, COLOR_CLOUD);
+    const sunSprite = createOffscreen(PIXEL_SUN, COLOR_SUN);
+    const hillSprites = PIXEL_HILLS.map((h) => createOffscreen(h, COLOR_HILL));
+    const birdSprites = BIRD_FRAMES.map((b) => createOffscreen(b, COLOR_INK));
 
-    // Pre-render cloud with filled interior
-    const cloudSprite = (() => {
-      const oc = document.createElement('canvas');
-      const rows = CLOUD_BITMAP.length;
-      const cols = CLOUD_BITMAP[0].length;
-      oc.width = cols * PIXEL_SCALE;
-      oc.height = rows * PIXEL_SCALE;
-      const octx = oc.getContext('2d');
-      if (octx) {
-        // First fill inside with cloud fill
-        octx.fillStyle = COLOR_CLOUD_FILL;
-        octx.fillRect(
-          2 * PIXEL_SCALE,
-          2 * PIXEL_SCALE,
-          (cols - 4) * PIXEL_SCALE,
-          (rows - 3) * PIXEL_SCALE
-        );
-        // Then draw outline
-        octx.fillStyle = COLOR_INK;
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            if (CLOUD_BITMAP[r][c] === '#') {
-              octx.fillRect(c * PIXEL_SCALE, r * PIXEL_SCALE, PIXEL_SCALE, PIXEL_SCALE);
-            }
-          }
-        }
-      }
-      return oc;
-    })();
+    // Ground position near the bottom of the visual
+    const groundY = height - 20;
 
-    // Ground line position
-    const groundY = height - 28;
-
-    // Distant mountain coordinates relative to width
-    const mountainPeaks = [
-      { xPct: 0.48, height: 28 },
-      { xPct: 0.64, height: 48 }, // Tallest pyramid peak near the sun
-      { xPct: 0.78, height: 24 },
-      { xPct: 0.90, height: 16 },
-    ];
-
-    // Clouds array (drift slowly across sky)
-    const clouds = [
-      { x: width * 0.12, y: 35, speed: 5 },
-      { x: width * 0.40, y: 55, speed: 8 },
-      { x: width * 0.76, y: 38, speed: 6 },
-      { x: width * 0.94, y: 52, speed: 7 },
-    ];
-
-    // Ground obstacles: 2 Cacti & 1 Rock (as in reference Image 2)
-    const groundObjects = [
-      { x: width * 0.42, type: 'cactus_single', sprite: cactusSingle },
-      { x: width * 0.58, type: 'rock', sprite: rockSprite },
-      { x: width * 0.86, type: 'cactus_double', sprite: cactusDouble },
-    ];
-
-    // Occasional bird
-    const bird = {
-      active: true,
-      x: width * 0.28,
-      y: 58,
-      speed: 26,
-      flapFrame: 0,
-      flapTimer: 0,
-    };
-
-    // Running dust particles
-    interface DustParticle {
-      x: number;
-      y: number;
-      size: number;
-      opacity: number;
-      vx: number;
-      vy: number;
-    }
-    const dustParticles: DustParticle[] = [];
-    let dustTimer = 0;
-
-    // Ground broken line segments
-    const groundSegments = Array.from({ length: 32 }, (_, i) => ({
-      x: (i * (width + 100)) / 32,
-      len: 12 + Math.random() * 20,
-      gap: 3 + Math.random() * 6,
-      dotX: Math.random() > 0.4 ? Math.random() * 15 : null,
+    // Desert state objects
+    const groundMarks = Array.from({ length: 24 }, (_, i) => ({
+      x: (i * (width + 100)) / 24 + Math.random() * 12,
+      width: Math.random() > 0.5 ? 4 : 2,
     }));
+
+    // Clouds drifting across the wide canvas
+    const clouds = [
+      { x: 30, y: 16, speed: 7 },
+      { x: 190, y: 34, speed: 10 },
+      { x: 360, y: 14, speed: 6 },
+      { x: 520, y: 28, speed: 8 },
+    ];
+
+    // Distant horizon hills
+    const hills = [
+      { x: 260, type: 0, speed: 5 },
+      { x: 440, type: 1, speed: 5 },
+    ];
+
+    // Cacti passing on ground
+    const cacti = [
+      { x: width + 50, type: 0 },
+      { x: width + 280, type: 1 },
+    ];
+
+    // Pterodactyl flying across sky
+    const bird = {
+      active: false,
+      x: width + 50,
+      y: 30,
+      speed: 38,
+      flapFrame: 0,
+      nextSpawnTime: performance.now() + 4000,
+    };
 
     const handleResize = () => {
       if (!container) return;
-      width = customWidth || container.clientWidth || 780;
+      width = container.clientWidth || 550;
       dpr = window.devicePixelRatio || 1;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -380,14 +357,15 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    // Animation state
+    // Animation Loop State
     let animationFrameId: number;
     let lastTime = performance.now();
     let walkTimer = 0;
     let walkFrameIndex = 0;
+    let birdFlapTimer = 0;
     let isVisible = true;
 
-    // Pause animation when scrolled out of viewport (0% CPU)
+    // Viewport IntersectionObserver: pause when off-screen (0% CPU)
     const observer = new IntersectionObserver(
       (entries) => {
         isVisible = entries[0].isIntersecting;
@@ -410,146 +388,110 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
 
       ctx.clearRect(0, 0, width, height);
 
-      // Parallax mouse interaction
-      const mouseParallax = isHovered ? (mousePosRef.current.x / width - 0.5) * 8 : 0;
+      // Slow, calm stroll speed: 22 px/sec
+      const scrollSpeed = 22;
 
-      // 1. Draw Distant Subtle Mountains
-      ctx.fillStyle = COLOR_MOUNTAIN;
-      ctx.beginPath();
-      ctx.moveTo(width * 0.38 + mouseParallax * 0.4, groundY);
-      mountainPeaks.forEach((p) => {
-        const peakX = width * p.xPct + mouseParallax * 0.4;
-        const peakY = groundY - p.height;
-        ctx.lineTo(peakX - 16, groundY - p.height * 0.4);
-        ctx.lineTo(peakX, peakY);
-        ctx.lineTo(peakX + 16, groundY - p.height * 0.4);
-      });
-      ctx.lineTo(width * 0.98 + mouseParallax * 0.4, groundY);
-      ctx.closePath();
-      ctx.fill();
-
-      // 2. Draw Muted Yellow Pixel Sun (as in Image 2, above the peak on right)
-      const sunX = Math.round(width * 0.74 + mouseParallax * 0.6);
-      const sunY = 40;
+      // 1. Draw Sun in the upper-right area
+      const sunX = Math.round(width - 80);
+      const sunY = 16;
       ctx.drawImage(sunSprite, sunX, sunY);
 
-      // 3. Draw Pixel Clouds (Drifting slowly across sky)
+      // 2. Update & Draw Clouds (subtle parallax shift on hover)
+      const parallaxShift = isHovered ? (mousePosRef.current.x / width - 0.5) * 8 : 0;
       clouds.forEach((cloud) => {
         if (!prefersReducedMotion) {
           cloud.x -= cloud.speed * dt;
           if (cloud.x < -cloudSprite.width) {
-            cloud.x = width + 20 + Math.random() * 50;
-            cloud.y = 25 + Math.random() * 45;
+            cloud.x = width + Math.random() * 50;
+            cloud.y = 12 + Math.random() * 26;
           }
         }
-        ctx.drawImage(
-          cloudSprite,
-          Math.round(cloud.x + mouseParallax * 0.8),
-          Math.round(cloud.y)
-        );
+        ctx.drawImage(cloudSprite, Math.round(cloud.x + parallaxShift), Math.round(cloud.y));
       });
 
-      // 4. Draw Subtle Pixel Bird
-      if (bird.active) {
+      // 3. Draw Distant Horizon Hills
+      hills.forEach((hill) => {
+        const sprite = hillSprites[hill.type % hillSprites.length];
         if (!prefersReducedMotion) {
-          bird.x -= bird.speed * dt;
-          bird.flapTimer += dt;
-          if (bird.flapTimer > 0.24) {
-            bird.flapFrame = (bird.flapFrame + 1) % 2;
-            bird.flapTimer = 0;
-          }
-          if (bird.x < -40) {
-            bird.x = width + 60 + Math.random() * 120;
-            bird.y = 35 + Math.random() * 35;
+          hill.x -= hill.speed * dt;
+          if (hill.x < -sprite.width) {
+            hill.x = width + Math.random() * 80;
           }
         }
-        const bSprite = birdSprites[bird.flapFrame];
-        ctx.drawImage(bSprite, Math.round(bird.x + mouseParallax), Math.round(bird.y));
-      }
+        ctx.drawImage(sprite, Math.round(hill.x), Math.round(groundY - sprite.height + 1));
+      });
 
-      // 5. Draw Ground Line & Scrolling Broken Segments
-      const scrollSpeed = 24; // px/sec
+      // 4. Draw Ground Line
       ctx.strokeStyle = COLOR_GROUND;
       ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY + 0.5);
+      ctx.lineTo(width, groundY + 0.5);
+      ctx.stroke();
 
-      groundSegments.forEach((seg) => {
+      // Scrolling ground marks (tiny pixel pebbles / dashes)
+      ctx.fillStyle = COLOR_GROUND;
+      groundMarks.forEach((mark) => {
         if (!prefersReducedMotion) {
-          seg.x -= scrollSpeed * dt;
-          if (seg.x + seg.len < -20) {
-            seg.x = width + Math.random() * 15;
+          mark.x -= scrollSpeed * dt;
+          if (mark.x < -10) {
+            mark.x = width + Math.random() * 25;
           }
         }
-        // Segment line
-        const sx = Math.round(seg.x);
-        ctx.beginPath();
-        ctx.moveTo(sx, groundY + 0.5);
-        ctx.lineTo(sx + seg.len, groundY + 0.5);
-        ctx.stroke();
-
-        // Occasional tiny ground dot beneath line
-        if (seg.dotX !== null) {
-          ctx.fillStyle = COLOR_GROUND;
-          ctx.fillRect(sx + seg.dotX, groundY + 4, PIXEL_SCALE, PIXEL_SCALE);
-        }
+        ctx.fillRect(Math.round(mark.x), groundY + 3, mark.width * PIXEL_SCALE, PIXEL_SCALE);
       });
 
-      // 6. Draw Ground Obstacles (Cacti & Rock)
-      groundObjects.forEach((obj) => {
+      // 5. Update & Draw Cacti
+      cacti.forEach((cactus) => {
+        const sprite = cactusSprites[cactus.type % cactusSprites.length];
         if (!prefersReducedMotion) {
-          obj.x -= scrollSpeed * dt;
-          if (obj.x < -obj.sprite.width - 20) {
-            // Respawn from right to maintain continuous ambient desert cycle
-            obj.x = width + 60 + Math.random() * 200;
+          cactus.x -= scrollSpeed * dt;
+          if (cactus.x < -sprite.width) {
+            cactus.x = width + 120 + Math.random() * 260;
+            cactus.type = Math.floor(Math.random() * cactusSprites.length);
           }
         }
-        const ox = Math.round(obj.x);
-        const oy = Math.round(groundY - obj.sprite.height);
-        ctx.drawImage(obj.sprite, ox, oy);
+        ctx.drawImage(sprite, Math.round(cactus.x), Math.round(groundY - sprite.height));
       });
 
-      // 7. Draw Running Dust Particles Behind Dino Feet
+      // 6. Update & Draw Bird
       if (!prefersReducedMotion) {
-        dustTimer += dt;
-        if (dustTimer > 0.09) {
-          dustTimer = 0;
-          // Spawn tiny dust puff behind Dino's trailing foot
-          dustParticles.push({
-            x: width * 0.22 - 6,
-            y: groundY - 2,
-            size: Math.random() > 0.5 ? 2 : 1,
-            opacity: 0.5,
-            vx: -(12 + Math.random() * 10),
-            vy: -(4 + Math.random() * 6),
-          });
+        if (!bird.active && now > bird.nextSpawnTime) {
+          bird.active = true;
+          bird.x = width + 40;
+          bird.y = 22 + Math.random() * 20;
         }
 
-        for (let i = dustParticles.length - 1; i >= 0; i--) {
-          const p = dustParticles[i];
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          p.opacity -= dt * 1.8;
-          if (p.opacity <= 0) {
-            dustParticles.splice(i, 1);
-            continue;
+        if (bird.active) {
+          bird.x -= bird.speed * dt;
+          birdFlapTimer += dt;
+          if (birdFlapTimer > 0.22) {
+            bird.flapFrame = (bird.flapFrame + 1) % 2;
+            birdFlapTimer = 0;
           }
-          ctx.fillStyle = `rgba(24, 21, 17, ${p.opacity * 0.4})`;
-          ctx.fillRect(Math.round(p.x), Math.round(p.y), p.size * PIXEL_SCALE, p.size * PIXEL_SCALE);
+
+          const birdSprite = birdSprites[bird.flapFrame];
+          ctx.drawImage(birdSprite, Math.round(bird.x), Math.round(bird.y));
+
+          if (bird.x < -40) {
+            bird.active = false;
+            bird.nextSpawnTime = now + 15000 + Math.random() * 15000;
+          }
         }
       }
 
-      // 8. Draw T-Rex Dinosaur (Facing RIGHT, as in Image 2)
-      const dinoX = Math.round(width * 0.22); // Positioned nicely on the left-middle
+      // 7. Draw Dinosaur
+      // Fixed horizontal position on the left side of the scene (~44px)
+      const dinoX = 44;
       let activeDinoSprite: HTMLCanvasElement;
 
       if (prefersReducedMotion) {
-        activeDinoSprite = dinoSprites[1]; // Standing neutral
+        activeDinoSprite = dinoSprites[1]; // Standing static
       } else if (isHovered) {
-        // Curious perk when mouse hovers over scene
-        activeDinoSprite = dinoSprites[3];
+        activeDinoSprite = dinoSprites[3]; // Curious head up on hover
       } else {
         walkTimer += dt;
-        if (walkTimer > 0.12) {
-          // Rapid, cute running legs: 0 -> 1 -> 2 -> 1
+        if (walkTimer > 0.18) {
           walkFrameIndex = (walkFrameIndex + 1) % 4;
           walkTimer = 0;
         }
@@ -572,7 +514,7 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
     };
-  }, [customWidth, customHeight, isHovered]);
+  }, [height, isHovered]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -591,15 +533,15 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       onMouseMove={handleMouseMove}
       className={`relative select-none pointer-events-auto overflow-hidden ${className}`}
       style={{
-        height: `${customHeight}px`,
+        height: `${height}px`,
         imageRendering: 'pixelated',
       }}
-      aria-label="Decorative animated pixel-art dinosaur landscape"
+      aria-label="Decorative animated pixel-art desert scene"
       role="img"
     >
       <canvas
         ref={canvasRef}
-        className="block w-full h-full bg-transparent"
+        className="block bg-transparent w-full"
         style={{
           imageRendering: 'pixelated',
         }}
