@@ -16,7 +16,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative pt-20 sm:pt-24 pb-8 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center min-h-[92vh] overflow-visible"
+      className="relative pt-20 sm:pt-24 pb-3 sm:pb-4 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center overflow-visible"
     >
       {/* 1. Sub-Header Status Row */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -255,7 +255,7 @@ export const Hero: React.FC = () => {
       </div>
 
       {/* 5. "SCROLL TO EXPLORE" Indicator */}
-      <div className="mt-5 flex flex-col items-center justify-center space-y-1 select-none pointer-events-none">
+      <div className="mt-4 sm:mt-6 mb-1 flex flex-col items-center justify-center space-y-1 select-none pointer-events-none">
         <span className="font-handwriting text-sm font-bold text-ink/65 tracking-wider">
           scroll to explore
         </span>

@@ -8,31 +8,26 @@ import { PixelDinoScene } from './common/PixelDinoScene';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="py-20 md:py-32 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
-      {/* Header Composition: Left Titles & Right Decorative Dino Scene */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10 md:mb-16">
-        <div>
-          {/* Section Eyebrow */}
-          <div className="flex items-center space-x-3 mb-4">
-            <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
-              {ABOUT_DATA.eyebrow}
-            </span>
-            <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
-          </div>
+    <section id="about" className="pt-2 sm:pt-4 pb-20 md:pb-28 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
+      {/* 1. Transitional Pixel Dino Scene (Occupies the red-marked whitespace between Hero and About) */}
+      <div className="w-full flex justify-center mb-8 sm:mb-12">
+        <PixelDinoScene className="w-full max-w-[850px]" height={210} />
+      </div>
 
-          {/* Section Main Title with Hand-drawn circle */}
-          <div className="relative inline-block">
-            <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
-              {ABOUT_DATA.title}
-            </h2>
-            <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
-          </div>
-        </div>
+      {/* 2. Section Eyebrow */}
+      <div className="flex items-center space-x-3 mb-4">
+        <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
+          {ABOUT_DATA.eyebrow}
+        </span>
+        <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
+      </div>
 
-        {/* Decorative Pixel Dino Desert Scene (Occupying Right Whitespace) */}
-        <div className="w-full lg:w-auto flex justify-start lg:justify-end">
-          <PixelDinoScene className="w-full max-w-[460px] sm:max-w-[480px] lg:w-[460px]" height={140} />
-        </div>
+      {/* 3. Section Main Title with Hand-drawn circle */}
+      <div className="relative inline-block mb-10 md:mb-16">
+        <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
+          {ABOUT_DATA.title}
+        </h2>
+        <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
       </div>
 
       {/* Two Column Editorial Composition */}
