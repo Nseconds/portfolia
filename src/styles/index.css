@@ -22,30 +22,25 @@
 body {
   background-color: #f5f3ed;
   /* Notebook subtle horizontal lined paper + faint vertical margin & grid lines */
-  background-image: 
+  background-image:
     /* Notebook ruling lines (height: var(--grid-h), ultra subtle) */
-    repeating-linear-gradient(
-      0deg,
+    repeating-linear-gradient(0deg,
       transparent,
       transparent calc(var(--grid-h) - 1px),
       rgba(24, 21, 17, 0.04) calc(var(--grid-h) - 1px),
       rgba(24, 21, 17, 0.04) var(--grid-h)
     ),
     /* Soft vertical margin guideline (left margin notebook rule) */
-    linear-gradient(
-      90deg,
+    linear-gradient(90deg,
       transparent 0,
       transparent 48px,
       rgba(255, 77, 141, 0.07) 48px,
       rgba(255, 77, 141, 0.07) 50px,
-      transparent 50px
-    ),
+      transparent 50px),
     /* Subtle dot grid */
-    radial-gradient(
-      circle,
+    radial-gradient(circle,
       rgba(24, 21, 17, 0.08) 1px,
-      transparent 1px
-    );
+      transparent 1px);
   background-size: 100% var(--grid-h), 100% 100%, var(--grid-w) var(--grid-h);
   background-position: var(--grid-offset-x) var(--grid-offset-y), 0 0, var(--grid-offset-x) var(--grid-offset-y);
 }
@@ -65,13 +60,11 @@ body {
 
 /* Torn paper edge effect */
 .torn-edge-b {
-  clip-path: polygon(
-    0% 0%, 100% 0%, 100% 96%,
-    95% 98%, 90% 95%, 85% 98%, 80% 96%, 75% 99%, 70% 95%,
-    65% 98%, 60% 95%, 55% 98%, 50% 95%, 45% 99%, 40% 96%,
-    35% 98%, 30% 95%, 25% 98%, 20% 96%, 15% 99%, 10% 95%,
-    5% 98%, 0% 95%
-  );
+  clip-path: polygon(0% 0%, 100% 0%, 100% 96%,
+      95% 98%, 90% 95%, 85% 98%, 80% 96%, 75% 99%, 70% 95%,
+      65% 98%, 60% 95%, 55% 98%, 50% 95%, 45% 99%, 40% 96%,
+      35% 98%, 30% 95%, 25% 98%, 20% 96%, 15% 99%, 10% 95%,
+      5% 98%, 0% 95%);
 }
 
 /* Custom scrollbar */
@@ -79,14 +72,17 @@ body {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f5f3ed;
   border-left: 1px solid rgba(24, 21, 17, 0.1);
 }
+
 ::-webkit-scrollbar-thumb {
   background: #181511;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #ff4d8d;
 }
@@ -96,4 +92,3 @@ body {
   background-color: #f7c948;
   color: #181511;
 }
-
