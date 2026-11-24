@@ -16,7 +16,7 @@ export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="relative pt-20 sm:pt-24 pb-3 sm:pb-4 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center overflow-visible"
+      className="relative pt-20 sm:pt-24 pb-8 px-4 sm:px-6 max-w-5xl mx-auto flex flex-col justify-center min-h-[92vh] overflow-visible"
     >
       {/* 1. Sub-Header Status Row */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -252,17 +252,6 @@ export const Hero: React.FC = () => {
         <StickyNote text="MADE THINGS" color="yellow" rotation="-rotate-1" tag="CRAFT" showPin={false} />
         <StickyNote text="AI/ML ENGINEER" color="cyan" rotation="rotate-1" tag="DISCIPLINE" showPin={false} />
         <StickyNote text="SWEAT THE DETAILS" color="pink" rotation="-rotate-2" tag="PRINCIPLE" showPin={false} />
-      </div>
-
-      {/* 5. "SCROLL TO EXPLORE" Indicator */}
-      <div className="mt-4 sm:mt-6 mb-1 flex flex-col items-center justify-center space-y-1 select-none pointer-events-none">
-        <span className="font-handwriting text-sm font-bold text-ink/65 tracking-wider">
-          scroll to explore
-        </span>
-        <div className="w-4 h-6 rounded-full border-[1.5px] border-ink flex items-start justify-center p-0.5 shadow-brutal-sm">
-          <span className="w-1 h-1.5 rounded-full bg-ink animate-bounce"></span>
-        </div>
-        <span className="text-ink/60 text-[10px] -mt-1 font-bold">↓</span>
       </div>
     </section>
   );
