@@ -10,32 +10,35 @@ export const About: React.FC = () => {
   return (
     <section id="about" className="pt-8 sm:pt-10 md:pt-12 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
       {/* Header Composition: Left Titles & Right Dino Game Scene */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-4 lg:gap-x-8 items-start mb-8 md:mb-12">
-        {/* 1. Left: Section Eyebrow (Mobile Order 1, Desktop Col 1-5 Row 1) */}
-        <div className="order-1 lg:col-span-5 flex items-center space-x-3 pt-1">
-          <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
-            {ABOUT_DATA.eyebrow}
-          </span>
-          <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
-        </div>
-
-        {/* 2. Right: Dino Game Scene (Mobile Order 3, Desktop Col 6-12 Row 1-2, Centered around WHAT'S UP level) */}
-        <div className="order-3 lg:order-2 lg:col-span-7 lg:row-span-2 w-full flex justify-center lg:justify-end mt-2 lg:mt-5 pointer-events-none sm:pointer-events-auto">
-          <PixelDinoScene className="w-full" height={140} />
-        </div>
-
-        {/* 3. Left: WHAT'S UP Main Title (Mobile Order 2, Desktop Col 1-5 Row 2) */}
-        <div className="order-2 lg:order-3 lg:col-span-5">
-          <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink select-none">
-            WHAT'S{' '}
-            <span className="relative inline-block">
-              <span className="relative z-10">UP</span>
-              <HandDrawnCircle
-                className="absolute -top-2 sm:-top-2.5 md:-top-3 -left-3.5 sm:-left-4 md:-left-5 w-20 sm:w-24 md:w-28 h-12 sm:h-14 md:h-16 pointer-events-none z-0"
-                color="#f7c948"
-              />
+      <div className="relative mb-8 md:mb-12">
+        {/* Left Column: Eyebrow and Main Title */}
+        <div className="max-w-xl">
+          {/* 1. Section Eyebrow */}
+          <div className="flex items-center space-x-3 pt-1 lg:pt-8 mb-2 lg:mb-4">
+            <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
+              {ABOUT_DATA.eyebrow}
             </span>
-          </h2>
+            <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
+          </div>
+
+          {/* 2. Main Title with yellow ring around UP */}
+          <div>
+            <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink select-none">
+              WHAT'S{' '}
+              <span className="relative inline-block">
+                <span className="relative z-10">UP</span>
+                <HandDrawnCircle
+                  className="absolute -top-2 sm:-top-2.5 md:-top-3 -left-3.5 sm:-left-4 md:-left-5 w-20 sm:w-24 md:w-28 h-12 sm:h-14 md:h-16 pointer-events-none z-0"
+                  color="#f7c948"
+                />
+              </span>
+            </h2>
+          </div>
+        </div>
+
+        {/* 3. Dino Game Scene: Mobile = natural flow below title; Desktop = upper-right strip above WHAT'S UP */}
+        <div className="mt-4 lg:mt-0 lg:absolute lg:-top-10 lg:right-0 lg:w-[54%] xl:w-[50%] flex justify-center lg:justify-end pointer-events-none sm:pointer-events-auto">
+          <PixelDinoScene className="w-full max-w-[540px]" height={135} />
         </div>
       </div>
 
