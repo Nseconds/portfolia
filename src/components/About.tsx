@@ -8,9 +8,9 @@ import { PixelDinoScene } from './common/PixelDinoScene';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
+    <section id="about" className="mt-16 md:mt-20 lg:mt-24 pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
       {/* Header Composition: Left Titles & Right Dino Game Scene */}
-      <div className="relative mb-8 md:mb-12">
+      <div className="relative mb-8 md:mb-12 lg:mb-16">
         {/* Left Column: Eyebrow and Main Title */}
         <div className="max-w-xl">
           {/* 1. Section Eyebrow */}
@@ -36,8 +36,8 @@ export const About: React.FC = () => {
           </div>
         </div>
 
-        {/* 3. Dino Game Scene: Mobile = natural flow below title; Desktop = upper-right strip above WHAT'S UP */}
-        <div className="mt-4 lg:mt-0 lg:absolute lg:-top-6 lg:right-0 lg:w-[54%] xl:w-[50%] flex justify-center lg:justify-end pointer-events-none sm:pointer-events-auto">
+        {/* 3. Dino Game Scene: Mobile = natural flow below title; Desktop = begins at green line */}
+        <div className="mt-4 lg:mt-0 lg:absolute lg:top-11 lg:right-0 lg:w-[54%] xl:w-[50%] flex justify-center lg:justify-end pointer-events-none sm:pointer-events-auto">
           <PixelDinoScene className="w-full max-w-[540px]" height={135} />
         </div>
       </div>
