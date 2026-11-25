@@ -10,29 +10,26 @@ export const About: React.FC = () => {
   return (
     <section id="about" className="pt-8 sm:pt-10 md:pt-12 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
       {/* Header Composition: Left Titles & Right Dino Game Scene */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center mb-6 md:mb-8">
-        {/* Left: About Eyebrow & Title (~42% width) */}
-        <div className="lg:col-span-5 space-y-1">
-          {/* Section Eyebrow */}
-          <div className="flex items-center space-x-3 mb-2">
-            <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
-              {ABOUT_DATA.eyebrow}
-            </span>
-            <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
-          </div>
-
-          {/* Section Main Title with Hand-drawn circle */}
-          <div className="relative inline-block">
-            <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
-              {ABOUT_DATA.title}
-            </h2>
-            <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-4 lg:gap-x-8 items-start mb-8 md:mb-12">
+        {/* 1. Left: Section Eyebrow (Mobile Order 1, Desktop Col 1-5 Row 1) */}
+        <div className="order-1 lg:col-span-5 flex items-center space-x-3 pt-1">
+          <span className="font-handwriting text-2xl md:text-3xl text-crayon-pink font-bold transform -rotate-3">
+            {ABOUT_DATA.eyebrow}
+          </span>
+          <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
         </div>
 
-        {/* Right: Dino Game Scene (~58% width, wide horizontal composition) */}
-        <div className="lg:col-span-7 w-full flex justify-center lg:justify-end">
-          <PixelDinoScene className="w-full" height={160} />
+        {/* 2. Right: Dino Game Scene (Mobile Order 3, Desktop Col 6-12 Row 1-2, Centered between eyebrow and title) */}
+        <div className="order-3 lg:order-2 lg:col-span-7 lg:row-span-2 w-full flex justify-center lg:justify-end mt-2 lg:mt-0 lg:-mt-3.5 pointer-events-none sm:pointer-events-auto">
+          <PixelDinoScene className="w-full" height={140} />
+        </div>
+
+        {/* 3. Left: WHAT'S UP Main Title (Mobile Order 2, Desktop Col 1-5 Row 2) */}
+        <div className="order-2 lg:order-3 lg:col-span-5 relative inline-block">
+          <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
+            {ABOUT_DATA.title}
+          </h2>
+          <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
         </div>
       </div>
 

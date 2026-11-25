@@ -308,6 +308,9 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
     // Ground position near the bottom of the visual
     const groundY = height - 20;
 
+    // Dino X position (more breathing room on desktop, compact on mobile)
+    const dinoX = width > 640 ? 110 : 44;
+
     // Desert state objects
     const groundMarks = Array.from({ length: 24 }, (_, i) => ({
       x: (i * (width + 100)) / 24 + Math.random() * 12,
@@ -316,32 +319,32 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
 
     // Clouds drifting across the wide canvas
     const clouds = [
-      { x: 30, y: 16, speed: 7 },
-      { x: 190, y: 34, speed: 10 },
-      { x: 360, y: 14, speed: 6 },
-      { x: 520, y: 28, speed: 8 },
+      { x: 20, y: 12, speed: 7 },
+      { x: 170, y: 32, speed: 10 },
+      { x: 340, y: 14, speed: 6 },
+      { x: 490, y: 26, speed: 8 },
     ];
 
     // Distant horizon hills
     const hills = [
-      { x: 260, type: 0, speed: 5 },
-      { x: 440, type: 1, speed: 5 },
+      { x: width * 0.42, type: 0, speed: 5 },
+      { x: width * 0.74, type: 1, speed: 5 },
     ];
 
-    // Cacti passing on ground
+    // Cacti passing on ground (initial positions match reference visual composition)
     const cacti = [
-      { x: width + 50, type: 0 },
-      { x: width + 280, type: 1 },
+      { x: dinoX - 26, type: 0 },
+      { x: width * 0.58, type: 1 },
     ];
 
-    // Pterodactyl flying across sky
+    // Pterodactyl flying across sky (initially active matching reference)
     const bird = {
-      active: false,
-      x: width + 50,
-      y: 30,
-      speed: 38,
+      active: true,
+      x: 160,
+      y: 24,
+      speed: 30,
       flapFrame: 0,
-      nextSpawnTime: performance.now() + 4000,
+      nextSpawnTime: 0,
     };
 
     const handleResize = () => {
@@ -392,8 +395,8 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       const scrollSpeed = 22;
 
       // 1. Draw Sun in the upper-right area
-      const sunX = Math.round(width - 80);
-      const sunY = 16;
+      const sunX = Math.round(width - 70);
+      const sunY = 14;
       ctx.drawImage(sunSprite, sunX, sunY);
 
       // 2. Update & Draw Clouds (subtle parallax shift on hover)
@@ -481,8 +484,8 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       }
 
       // 7. Draw Dinosaur
-      // Fixed horizontal position on the left side of the scene (~44px)
-      const dinoX = 44;
+      // Positioned with breathing room from the heading on desktop, compact on mobile
+      const dinoDrawX = width > 640 ? 110 : 44;
       let activeDinoSprite: HTMLCanvasElement;
 
       if (prefersReducedMotion) {
@@ -500,7 +503,7 @@ export const PixelDinoScene: React.FC<PixelDinoSceneProps> = ({
       }
 
       const dinoY = groundY - activeDinoSprite.height;
-      ctx.drawImage(activeDinoSprite, dinoX, dinoY);
+      ctx.drawImage(activeDinoSprite, dinoDrawX, dinoY);
 
       if (!prefersReducedMotion) {
         animationFrameId = requestAnimationFrame(render);
