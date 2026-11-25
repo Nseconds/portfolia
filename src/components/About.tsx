@@ -19,17 +19,23 @@ export const About: React.FC = () => {
           <CurvedArrow direction="right" className="w-10 h-6 text-ink/60" />
         </div>
 
-        {/* 2. Right: Dino Game Scene (Mobile Order 3, Desktop Col 6-12 Row 1-2, Centered between eyebrow and title) */}
-        <div className="order-3 lg:order-2 lg:col-span-7 lg:row-span-2 w-full flex justify-center lg:justify-end mt-2 lg:mt-0 lg:-mt-3.5 pointer-events-none sm:pointer-events-auto">
+        {/* 2. Right: Dino Game Scene (Mobile Order 3, Desktop Col 6-12 Row 1-2, Centered around WHAT'S UP level) */}
+        <div className="order-3 lg:order-2 lg:col-span-7 lg:row-span-2 w-full flex justify-center lg:justify-end mt-2 lg:mt-5 pointer-events-none sm:pointer-events-auto">
           <PixelDinoScene className="w-full" height={140} />
         </div>
 
         {/* 3. Left: WHAT'S UP Main Title (Mobile Order 2, Desktop Col 1-5 Row 2) */}
-        <div className="order-2 lg:order-3 lg:col-span-5 relative inline-block">
-          <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink">
-            {ABOUT_DATA.title}
+        <div className="order-2 lg:order-3 lg:col-span-5">
+          <h2 className="font-sans text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-ink select-none">
+            WHAT'S{' '}
+            <span className="relative inline-block">
+              <span className="relative z-10">UP</span>
+              <HandDrawnCircle
+                className="absolute -top-2 sm:-top-2.5 md:-top-3 -left-3.5 sm:-left-4 md:-left-5 w-20 sm:w-24 md:w-28 h-12 sm:h-14 md:h-16 pointer-events-none z-0"
+                color="#f7c948"
+              />
+            </span>
           </h2>
-          <HandDrawnCircle className="-top-3 -right-6 w-32 h-16" color="#f7c948" />
         </div>
       </div>
 
