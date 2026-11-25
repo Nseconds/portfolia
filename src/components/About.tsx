@@ -8,7 +8,7 @@ import { PixelDinoScene } from './common/PixelDinoScene';
 
 export const About: React.FC = () => {
   return (
-    <section id="about" className="mt-16 md:mt-20 lg:mt-24 pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
+    <section id="about" className="mt-16 md:mt-10 lg:mt-12 pt-4 sm:pt-6 md:pt-8 pb-16 md:pb-24 px-4 md:px-8 max-w-6xl mx-auto relative overflow-hidden">
       {/* Header Composition: Upper Row (about me! + Dino Scene), Lower Row (WHAT'S UP) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-3 lg:gap-y-2 lg:gap-x-8 items-center mb-8 md:mb-12">
         {/* 1. Left Upper: about me! -> (Mobile Order 1, Desktop Col 1-5 Row 1) */}
